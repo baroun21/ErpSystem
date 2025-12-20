@@ -12,7 +12,7 @@
 
 	<modules>
 		<module>model</module>
-		<module>ViewAndControllersForHr</module>
+		<module>ViewAndControllers</module>
 		<module>UserService</module>
 		<module>ERPMain</module>
 	</modules>
