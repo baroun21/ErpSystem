@@ -2,6 +2,7 @@ package com.company.userService.UserService;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -9,10 +10,10 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class EmailService {
 
-    private final JavaMailSender mailSender;
+    private  JavaMailSender mailSender;
 
     // Make it async so sending email does not block the API response
     @Async
