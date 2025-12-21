@@ -33,7 +33,7 @@ public class Attendance implements Serializable {
     @Column(name = "HOURS_WORKED")
     private Double hoursWorked;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "EMPLOYEE_ID", nullable = false)
     private Employee employee;
 

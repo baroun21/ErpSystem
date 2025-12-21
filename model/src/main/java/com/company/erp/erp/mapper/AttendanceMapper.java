@@ -1,6 +1,7 @@
 package com.company.erp.erp.mapper;
 
 import com.company.erp.erp.entites.Attendance;
+import com.company.erp.erp.entites.Dtos.EmployeeSummary;
 import com.company.erp.erp.entites.request.AttendanceRequest;
 import com.company.erp.erp.entites.response.AttendanceResponse;
 import org.mapstruct.*;
@@ -20,4 +21,12 @@ public interface AttendanceMapper {
             AttendanceRequest request,
             @MappingTarget Attendance attendance
     );
+
+    @Named("extractEmailCustom")
+    default String getEmail(Attendance attendance) {
+        if (attendance == null || attendance.getEmployee() == null) {
+            return null;
+        }
+        return attendance.getEmployee().getEmail();
+    }
 }
