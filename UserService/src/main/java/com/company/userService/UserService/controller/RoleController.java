@@ -21,7 +21,7 @@ public class RoleController {
 
     // Only ADMIN can create roles
     @Operation(summary = "Create a new role", description = "Only users with ADMIN role can create roles")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN','HR')")
     @PostMapping
     public ResponseEntity<RoleResponse> createRole(@RequestBody RoleCreateRequest dto) {
         return ResponseEntity.ok(roleService.createRole(dto));
@@ -29,7 +29,7 @@ public class RoleController {
 
     // ADMIN and HR can view roles
     @Operation(summary = "Get all roles", description = "Users with ADMIN or HR roles can view all roles")
-    @PreAuthorize("hasAnyRole('ADMIN','HR')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN','HR')")
     @GetMapping
     public ResponseEntity<List<RoleResponse>> getAllRoles() {
         return ResponseEntity.ok(roleService.getAllRoles());
@@ -37,7 +37,7 @@ public class RoleController {
 
     // ADMIN and HR can view a role
     @Operation(summary = "Get role by ID", description = "Users with ADMIN or HR roles can view a role by its ID")
-    @PreAuthorize("hasAnyRole('ADMIN','HR')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN','HR')")
     @GetMapping("/{id}")
     public ResponseEntity<RoleResponse> getRoleById(@PathVariable Long id) {
         return ResponseEntity.ok(roleService.getRoleById(id));

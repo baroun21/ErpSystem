@@ -1,5 +1,6 @@
 package com.company.userService.UserService;
 
+import com.company.erp.erp.entites.Company;
 import com.company.erp.erp.entites.Role;
 import com.company.erp.erp.entites.User;
 
@@ -7,12 +8,13 @@ import com.company.erp.erp.entites.request.UserCreateRequest;
 import com.company.erp.erp.entites.request.UserUpdateRequest;
 import com.company.erp.erp.entites.response.UserResponse;
 import com.company.erp.erp.mapper.UserMapper;
+//import com.company.userService.UserService.jwt.TenantValidator;
 import com.company.userService.repository.RoleRepository;
 import com.company.userService.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,7 +38,7 @@ public class UserService {
         Role role = roleRepository.findById(dto.getRoleId())
                 .orElseThrow(() -> new IllegalArgumentException("Role not found"));
 
-        User user = userMapper.fromCreateRequest(dto, role);
+        User user = userMapper.fromCreateRequest(dto, role, Company.builder().build());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
 
         User saved = userRepository.save(user);

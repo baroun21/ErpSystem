@@ -4,6 +4,7 @@ import com.company.erp.erp.enums.LeaveStatus;
 import com.company.erp.erp.enums.LeaveType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Filter;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -15,7 +16,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class LeaveRequest implements Serializable {
+@EntityListeners(TenantEntityListener.class)
+public class LeaveRequest extends BaseEntity  implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

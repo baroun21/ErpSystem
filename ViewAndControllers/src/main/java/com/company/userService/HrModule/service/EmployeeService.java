@@ -3,6 +3,7 @@ package com.company.userService.HrModule.service;
 import com.company.erp.erp.entites.Department;
 import com.company.erp.erp.entites.Employee;
 import com.company.erp.erp.entites.Job;
+import com.company.erp.erp.entites.TenantContext;
 import com.company.erp.erp.entites.request.EmployeeRequest;
 import com.company.erp.erp.entites.response.EmployeeResponse;
 import com.company.erp.erp.mapper.EmployeeMapper;
@@ -28,8 +29,20 @@ public class EmployeeService {
     private final DepartmentRepository departmentRepository;
     private final EmployeeMapper employeeMapper;
 
+    private Long currentCompanyIdOrThrow() {
+        Long companyId = TenantContext.getCompanyId();
+        if (companyId == null) {
+            throw new IllegalStateException("TenantContext.companyId is null (JWT/filter missing?)");
+        }
+        return companyId;
+    }
+
+    // ✅ CREATE (tenant-safe references)
     public EmployeeResponse createEmployee(EmployeeRequest request) {
-        // 1. Fetch related entities
+        Long companyId = currentCompanyIdOrThrow();
+
+        // If Job / Department are tenant-scoped too, you MUST fetch them tenant-safe.
+        // If they are global lookup tables, normal findById is fine.
         Job job = jobRepository.findById(request.getJobId())
                 .orElseThrow(() -> new ResourceNotFoundException("Job not found with ID: " + request.getJobId()));
 
@@ -41,52 +54,51 @@ public class EmployeeService {
 
         Employee manager = null;
         if (request.getManagerId() != null) {
-            manager = employeeRepository.findById(request.getManagerId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Manager not found with ID: " + request.getManagerId()));
+            manager = employeeRepository.findManagerInCompany(request.getManagerId(), companyId)
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Manager not found in this company with ID: " + request.getManagerId()));
         }
 
-//        User user = null;
-//        if (request.getUserId() != null) {
-//            user = userRepository.findById(request.getUserId())
-//                    .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + request.getUserId()));
-//        }
+        Employee employee = employeeMapper.toEntity(request, job, department, manager);
 
-        // 2. Map request → entity using MapStruct
-        Employee employee = employeeMapper.toEntity(request, job, department,manager);
+        // Optional: if your listener sets companyId, you can rely on it.
+        // But setting explicitly is extra safety:
+        employee.setCompanyId(companyId);
 
-//        // 3. Set optional manager (since mapper signature doesn’t include it)
-//        employee.getEmployeeId();
-
-        // 4. Save entity
         Employee savedEmployee = employeeRepository.save(employee);
-
-        // 5. Map entity → response DTO
         return employeeMapper.toResponse(savedEmployee);
     }
 
-
+    // ✅ READ ONE (tenant-safe)
     @Transactional(readOnly = true)
     public EmployeeResponse getEmployeeWithAttendance(Long id) {
-        Employee employee = employeeRepository.findByIdWithAttendance(id)
-                .orElseThrow(() -> new EntityNotFoundException("Employee not found with ID: " + id));
+        Long companyId = currentCompanyIdOrThrow();
 
-        // Map entity → response
+        Employee employee = employeeRepository.findByIdWithAttendance(id, companyId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Employee not found with ID: " + id + " in companyId: " + companyId));
+
         return employeeMapper.toResponse(employee);
     }
 
-    //  READ - all employees
+    // ✅ READ ALL (tenant-safe, does NOT rely on @Filter)
     @Transactional(readOnly = true)
     public List<EmployeeResponse> getAllEmployees() {
-        return employeeRepository.findAll()
+        Long companyId = currentCompanyIdOrThrow();
+
+        return employeeRepository.findAllByCompanyId(companyId)
                 .stream()
                 .map(employeeMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
-    //  UPDATE
+    // ✅ UPDATE (tenant-safe)
     public EmployeeResponse updateEmployee(Long id, EmployeeRequest request) {
-        Employee existingEmployee = employeeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with ID: " + id));
+        Long companyId = currentCompanyIdOrThrow();
+
+        Employee existingEmployee = employeeRepository.findByIdAndCompanyId(id, companyId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Employee not found with ID: " + id + " in this company"));
 
         Job job = jobRepository.findById(request.getJobId())
                 .orElseThrow(() -> new ResourceNotFoundException("Job not found with ID: " + request.getJobId()));
@@ -99,61 +111,27 @@ public class EmployeeService {
 
         Employee manager = null;
         if (request.getManagerId() != null) {
-            manager = employeeRepository.findById(request.getManagerId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Manager not found with ID: " + request.getManagerId()));
+            manager = employeeRepository.findManagerInCompany(request.getManagerId(), companyId)
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Manager not found in this company with ID: " + request.getManagerId()));
         }
 
-//        User user = null;
-//        if (request.getUserId() != null) {
-//            user = userRepository.findById(request.getUserId())
-//                    .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + request.getUserId()));
-//        }
-
-        // Map changes (ignore nulls)
         employeeMapper.updateEntityFromRequest(request, existingEmployee, job, department, manager);
 
-        Employee updatedEmployee = employeeRepository.save(existingEmployee);
+        // Ensure tenant never changes
+        existingEmployee.setCompanyId(companyId);
 
+        Employee updatedEmployee = employeeRepository.save(existingEmployee);
         return employeeMapper.toResponse(updatedEmployee);
     }
 
-    @Transactional
+    // ✅ DELETE (tenant-safe)
     public void deleteEmployee(Long id) {
+        Long companyId = currentCompanyIdOrThrow();
 
-        // 1 Check if the employee exists
-        Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with ID: " + id));
-
-
-
-        // 2 Perform delete (native query)
-        employeeRepository.deleteEmployeeById(id);
+        int deleted = employeeRepository.deleteByIdAndCompanyId(id, companyId);
+        if (deleted == 0) {
+            throw new ResourceNotFoundException("Employee not found in this company with ID: " + id);
+        }
     }
 }
-// postman for post request
-//{
-//  "firstName": "John",
-//  "lastName": "Doe",
-//  "email": "john.doe@company.com",
-//  "phoneNumber": "123456789",
-//  "hireDate": "2025-10-12",
-//  "jobId": 1,
-//  "departmentId": 2,
-//  "salary": 5500.00,
-//  "managerId": 3,
-//  "userId": 4
-//}
-
-// for put request
-//{
-//  "firstName": "Johnathan",
-//  "lastName": "Doe",
-//  "email": "john.doe@company.com",
-//  "phoneNumber": "987654321",
-//  "hireDate": "2025-10-12",
-//  "jobId": 1,
-//  "departmentId": 2,
-//  "salary": 6000.00,
-//  "managerId": 3,
-//  "userId": 4
-//}

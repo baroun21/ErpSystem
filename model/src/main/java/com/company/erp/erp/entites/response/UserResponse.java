@@ -13,5 +13,6 @@ public class UserResponse {
     private String fullName;
     private Boolean isActive;
     private String roleName;
+
 }
 

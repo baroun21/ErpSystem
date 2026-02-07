@@ -10,7 +10,9 @@ import com.company.erp.erp.mapper.AttendanceMapper;
 import com.company.userService.HrModule.exceptions.ResourceNotFoundException;
 import com.company.userService.HrModule.repository.AttendanceRepository;
 import com.company.userService.HrModule.repository.EmployeeRepository;
+//import com.company.userService.UserService.jwt.TenantValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,7 @@ public class AttendanceService {
     private final AttendanceRepository attendanceRepository;
     private final EmployeeRepository employeeRepository;
     private final AttendanceMapper attendanceMapper;
+//    private final TenantValidator tenantValidator;
 
     /**
      * Create a new attendance record
