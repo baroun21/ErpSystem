@@ -1,11 +1,13 @@
 package com.company.erp.erp.mapper;
 
+import com.company.erp.erp.entites.Company;
 import com.company.erp.erp.entites.Role;
 import com.company.erp.erp.entites.User;
 import com.company.erp.erp.entites.request.UserCreateRequest;
 import com.company.erp.erp.entites.response.UserResponse;
 import org.springframework.stereotype.Component;
 
+import java.nio.file.attribute.UserPrincipal;
 import java.time.LocalDateTime;
 @Component
 public class UserMapper {
@@ -21,7 +23,7 @@ public class UserMapper {
                 .build();
     }
 
-    public User fromCreateRequest(UserCreateRequest dto, Role role) {
+    public User fromCreateRequest(UserCreateRequest dto, Role role, Company company) {
         return User.builder()
                 .username(dto.getUsername())
                 .password(dto.getPassword()) // hash later

@@ -2,7 +2,9 @@ package com.company.erp.erp.entites;
 
 import jakarta.persistence.*;
 import lombok.*;
-
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,7 +16,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Attendance implements Serializable {
+@EntityListeners(TenantEntityListener.class)
+public class Attendance extends BaseEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

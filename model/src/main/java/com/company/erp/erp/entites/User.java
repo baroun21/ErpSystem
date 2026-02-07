@@ -2,17 +2,19 @@ package com.company.erp.erp.entites;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Filter;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "USERS")
-@ToString(exclude = {"role"})
-@EqualsAndHashCode(exclude = {"role"})
-@NoArgsConstructor
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User implements Serializable {
+@ToString(exclude = {"role"})
+@EqualsAndHashCode(exclude = {"role"})
+public class User extends BaseEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
@@ -20,7 +22,7 @@ public class User implements Serializable {
     @Column(name = "USER_ID")
     private Long id;
 
-    @Column(name = "USERNAME", nullable = false, unique = true, length = 50)
+    @Column(name = "USERNAME", nullable = false, length = 50)
     private String username;
 
     @Column(name = "PASSWORD", nullable = false)
@@ -50,6 +52,4 @@ public class User implements Serializable {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private PasswordResetToken passwordResetToken;
-
 }
-

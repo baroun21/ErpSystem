@@ -9,4 +9,5 @@ public class UserCreateRequest {
     private String email;
     private String fullName;
     private Long roleId;
+    private Long companyId;
 }

@@ -1,10 +1,12 @@
 package com.company.userService.UserService.jwt;
 
+import com.company.erp.erp.entites.TenantContext;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,64 +20,83 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    private final CustomUserDetailsService userDetailsService;
     private final JwtUtil jwtUtil;
-
+    private final CustomUserDetailsService userDetailsService;
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        String path = request.getRequestURI();
-        System.out.println("Checking if should not filter path: " + path);
-        // Skip all public endpoints
-        return path.startsWith("/api/auth/");
+        String path = request.getServletPath();
+        return path.startsWith("/api/auth/")
+                || path.equals("/api/company/register-tenant")
+                || path.startsWith("/v3/api-docs/")
+                || path.startsWith("/swagger-ui/")
+                || path.equals("/swagger-ui.html");
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain chain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain
+    ) throws ServletException, IOException {
 
+        try {
+            final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        // ------------------ Skip JWT check for public endpoints ------------------
-        // Any endpoint under /api/auth/ or /api/auth/password/ will bypass JWT validation
-        String path = request.getRequestURI();
-        if (path.startsWith("/api/auth/") || path.startsWith("/swagger-ui/**/") || path.startsWith("/v3/api-docs/") || path.startsWith("/swagger-ui.html")) {
-            chain.doFilter(request, response);
-            return;
-        }
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                filterChain.doFilter(request, response);
+                return;
+            }
 
+            String jwt = authHeader.substring(7);
 
-        final String authHeader = request.getHeader("Authorization");
-        String username = null;
-        String jwt = null;
+            String username;
+            Long companyId;
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            jwt = authHeader.substring(7);
             try {
-                username = jwtUtil.getUsernameFromToken(jwt);
+                username = jwtUtil.extractUsername(jwt);
+                companyId = jwtUtil.extractCompanyId(jwt);
             } catch (Exception e) {
-                // ignore invalid token
+                filterChain.doFilter(request, response);
+                return;
             }
-        }
 
-        System.out.println("[JWT FILTER] Request URI: " + request.getRequestURI());
-
-
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            if (jwtUtil.validateToken(jwt, userDetails.getUsername())) {
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails, null,
-                                userDetails.getAuthorities());
-
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+            if (username == null || companyId == null) {
+                filterChain.doFilter(request, response);
+                return;
             }
-        }
 
-        chain.doFilter(request, response);
+            if (SecurityContextHolder.getContext().getAuthentication() != null) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            // load user inside the company from DB
+            UserDetails userDetails = userDetailsService.loadUserByUsernameAndCompanyId(username, companyId);
+
+            // validate token (minimum: validate subject + expiration)
+            if (!jwtUtil.validateToken(jwt, userDetails.getUsername())) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            // set tenant ONLY after token is validated
+            TenantContext.setCompanyId(companyId);
+            System.out.println("Set TenantContext with companyId: " + companyId);
+            UsernamePasswordAuthenticationToken authToken =
+                    new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                    );
+
+            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+
+            filterChain.doFilter(request, response);
+
+        } finally {
+            TenantContext.clear();
+        }
     }
 }

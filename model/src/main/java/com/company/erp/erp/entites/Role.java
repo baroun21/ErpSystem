@@ -3,37 +3,37 @@ package com.company.erp.erp.entites;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-
 @Entity
-@Table(name = "ROLES")
+@Table(
+        name = "ROLES",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "UK_ROLES_NAME_CO", columnNames = {"ROLE_NAME", "COMPANY_ID"})
+        }
+)
 @NoArgsConstructor
-@Builder
-@Setter
+@AllArgsConstructor
 @Getter
-public class Role implements Serializable {
+@Setter
+@SuperBuilder
+@EntityListeners(TenantEntityListener.class)
+public class Role extends BaseEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ROLE_ID")
     private Long roleId;
 
-    @Column(name = "ROLE_NAME", nullable = false, unique = true, length = 50)
+    @Column(name = "ROLE_NAME", nullable = false, length = 50)
     private String roleName;
 
     @Column(name = "DESCRIPTION", length = 200)
     private String description;
 
-    // One Role → Many Users
-    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "role")
     private Set<User> users = new HashSet<>();
-
-    public Role(Long roleId, String roleName, String description, Set<User> users) {
-        this.roleId = roleId;
-        this.roleName = roleName;
-        this.description = description;
-        this.users = users;
-    }
 }

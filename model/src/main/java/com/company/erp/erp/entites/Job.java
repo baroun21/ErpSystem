@@ -2,6 +2,7 @@ package com.company.erp.erp.entites;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Filter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -14,7 +15,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Job implements Serializable {
+@EntityListeners(TenantEntityListener.class)
+public class Job extends BaseEntity  implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

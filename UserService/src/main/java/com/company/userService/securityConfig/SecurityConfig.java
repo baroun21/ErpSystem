@@ -1,8 +1,9 @@
 package com.company.userService.securityConfig;
 
-import com.company.userService.UserService.jwt.CustomUserDetailsService;
 import com.company.userService.UserService.exceptions.JwtAccessDeniedHandler;
 import com.company.userService.UserService.exceptions.JwtAuthenticationEntryPoint;
+import com.company.userService.UserService.jwt.CustomUserDetailsService;
+import com.company.userService.UserService.TenantUtils.HibernateCompanyFilterEnabler;
 import com.company.userService.UserService.jwt.JwtRequestFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -26,47 +27,55 @@ public class SecurityConfig {
     private final JwtRequestFilter jwtRequestFilter;
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
     private final JwtAccessDeniedHandler accessDeniedHandler;
+    private final HibernateCompanyFilterEnabler hibernateCompanyFilterEnabler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * AuthenticationManager هنا ممكن تسيبه موجود حتى لو انت بتتحقق من الباسورد يدوي في login
+     * لكنه مفيد لو هتستخدمه لاحقاً.
+     */
     @Bean
     public AuthenticationManager authManager(HttpSecurity http) throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder())
-                .and()
-                .build();
+        AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
+        builder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        return builder.build();
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
-                .formLogin().disable()
-                .httpBasic().disable()
+                .addFilterAfter(hibernateCompanyFilterEnabler, JwtRequestFilter.class)
                 .csrf(csrf -> csrf.disable())
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(authenticationEntryPoint)
-                        .accessDeniedHandler(accessDeniedHandler))
+                        .accessDeniedHandler(accessDeniedHandler)
+                )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll() // Public endpoints
+                        // Public endpoints
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/company/register-tenant").permitAll()
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
                         ).permitAll()
-                        .requestMatchers("/api/hr/**").hasAnyRole("HR", "ADMIN", "SUPER_ADMIN") // HR endpoints
+
+                        // Module-based endpoints (مثال)
+                        .requestMatchers("/api/hr/**").hasAnyRole("HR", "ADMIN", "SUPER_ADMIN")
+                        .requestMatchers("/api/inventory/**").hasAnyRole("INVENTORY", "ADMIN", "SUPER_ADMIN")
+                        .requestMatchers("/api/finance/**").hasAnyRole("FINANCE", "ADMIN", "SUPER_ADMIN")
+
+                        // Any other request must be authenticated
                         .anyRequest().authenticated()
                 );
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 }

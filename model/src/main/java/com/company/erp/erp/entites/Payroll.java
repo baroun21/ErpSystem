@@ -3,6 +3,7 @@ package com.company.erp.erp.entites;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Filter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -16,7 +17,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Payroll implements Serializable {
+@EntityListeners(TenantEntityListener.class)
+public class Payroll extends BaseEntity  implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "payroll_seq")

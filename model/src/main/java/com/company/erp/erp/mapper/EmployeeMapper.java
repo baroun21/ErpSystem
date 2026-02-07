@@ -29,12 +29,12 @@ public abstract class EmployeeMapper {
             @Mapping(target = "department", source = "department"),
             @Mapping(target = "managerId", source = "manager"),
             @Mapping(target = "user", ignore = true), // map separately if needed
-            @Mapping(target = "attendances", ignore = true) // handled separately
+            @Mapping(target = "attendances", ignore = true),// handled separately
+            @Mapping(target = "companyId", ignore = true)
     })
   public abstract Employee toEntity(EmployeeRequest request, Job job, Department department, Employee manager);
 
     // ────────────── Entity → Response ──────────────
-//    @Mapping(target = "managerId", ignore = true) // handled manually
     @Mapping(target = "employeeSummary", ignore = true) // handled manually
     public abstract EmployeeResponse toResponse(Employee employee);
 
@@ -52,13 +52,10 @@ public abstract class EmployeeMapper {
             @Mapping(target = "department", source = "department"),
             @Mapping(target = "managerId", source = "manager"),
             @Mapping(target = "attendances", ignore = true),
-            @Mapping(target = "user", ignore = true)
+            @Mapping(target = "user", ignore = true),
+            @Mapping(target = "companyId", ignore = true)
     })
-   public abstract void updateEntityFromRequest(EmployeeRequest request,
-                                 @MappingTarget Employee employee,
-                                 Job job,
-                                 Department department,
-                                 Employee manager);
+    public abstract void updateEntityFromRequest(EmployeeRequest request, @MappingTarget Employee employee, Job job, Department department, Employee manager);
 
     // ────────────── AfterMapping Helpers ──────────────
     @AfterMapping
