@@ -13,7 +13,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,7 +36,6 @@ public class AttendanceController {
                     @ApiResponse(responseCode = "404", description = "Employee not found", content = @Content)
             }
     )
-    @PreAuthorize("hasAnyRole('ADMIN','HR','SUPER_ADMIN')")
     @PostMapping
     public ResponseEntity<AttendanceResponse> createAttendance(
             @Valid @RequestBody AttendanceRequest request) {
@@ -51,7 +49,6 @@ public class AttendanceController {
             summary = "Get all attendance records",
             description = "Retrieves a list of all attendance records in the system."
     )
-    @PreAuthorize("hasAnyRole('ADMIN','HR','SUPER_ADMIN')")
     @GetMapping
     public ResponseEntity<List<AttendanceResponse>> getAllAttendances() {
         return ResponseEntity.ok(attendanceService.getAllAttendances());
@@ -67,7 +64,6 @@ public class AttendanceController {
                     @ApiResponse(responseCode = "404", description = "Attendance not found", content = @Content)
             }
     )
-    @PreAuthorize("hasAnyRole('ADMIN','HR','SUPER_ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<AttendanceResponse> getAttendanceById(
             @Parameter(description = "ID of the attendance record") @PathVariable Long id) {
@@ -85,7 +81,6 @@ public class AttendanceController {
                     @ApiResponse(responseCode = "404", description = "Attendance not found", content = @Content)
             }
     )
-    @PreAuthorize("hasAnyRole('ADMIN','HR','SUPER_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<AttendanceResponse> updateAttendance(
             @Parameter(description = "ID of the attendance record") @PathVariable Long id,
@@ -102,7 +97,6 @@ public class AttendanceController {
                     @ApiResponse(responseCode = "404", description = "Attendance not found", content = @Content)
             }
     )
-    @PreAuthorize("hasAnyRole('ADMIN','HR','SUPER_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAttendance(
             @Parameter(description = "ID of the attendance record") @PathVariable Long id) {

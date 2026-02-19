@@ -77,6 +77,12 @@
             <artifactId>ojdbc11</artifactId>
         </dependency>
 
+        <!-- PostgreSQL DB Driver -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>

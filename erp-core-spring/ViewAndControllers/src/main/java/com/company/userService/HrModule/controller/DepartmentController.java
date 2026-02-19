@@ -13,7 +13,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,7 +36,6 @@ public class DepartmentController {
                     @ApiResponse(responseCode = "409", description = "Duplicate department name", content = @Content)
             }
     )
-    @PreAuthorize("hasAnyRole('ADMIN','HR','SUPER_ADMIN')")
     @PostMapping
     public ResponseEntity<DepartmentResponse> createDepartment(
             @Valid @RequestBody DepartmentRequest request) {
@@ -50,7 +48,6 @@ public class DepartmentController {
             summary = "Get all departments",
             description = "Fetches a list of all departments in the company."
     )
-    @PreAuthorize("hasAnyRole('ADMIN','HR','SUPER_ADMIN')")
     @GetMapping
     public ResponseEntity<List<DepartmentResponse>> getAllDepartments() {
         List<DepartmentResponse> departments = departmentService.getAllDepartments();
@@ -67,7 +64,6 @@ public class DepartmentController {
                     @ApiResponse(responseCode = "404", description = "Department not found", content = @Content)
             }
     )
-    @PreAuthorize("hasAnyRole('ADMIN','HR','SUPER_ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<DepartmentResponse> getDepartmentById(
             @Parameter(description = "ID of the department") @PathVariable Long id) {
@@ -86,7 +82,6 @@ public class DepartmentController {
                     @ApiResponse(responseCode = "404", description = "Department not found", content = @Content)
             }
     )
-    @PreAuthorize("hasAnyRole('ADMIN','HR','SUPER_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<DepartmentResponse> updateDepartment(
             @Parameter(description = "ID of the department") @PathVariable Long id,
@@ -105,7 +100,6 @@ public class DepartmentController {
                     @ApiResponse(responseCode = "404", description = "Department not found", content = @Content)
             }
     )
-    @PreAuthorize("hasAnyRole('ADMIN','HR','SUPER_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDepartment(
             @Parameter(description = "ID of the department to delete") @PathVariable Long id) {

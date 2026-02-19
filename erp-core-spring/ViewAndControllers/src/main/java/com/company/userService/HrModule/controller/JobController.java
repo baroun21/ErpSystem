@@ -13,7 +13,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,7 +36,6 @@ public class JobController {
                     @ApiResponse(responseCode = "409", description = "Job title already exists", content = @Content)
             }
     )
-    @PreAuthorize("hasAnyRole('ADMIN','HR','SUPER_ADMIN')")
     @PostMapping
     public ResponseEntity<JobResponse> createJob(
             @Valid @RequestBody JobRequest request) {
@@ -54,7 +52,6 @@ public class JobController {
                             content = @Content(schema = @Schema(implementation = JobResponse.class)))
             }
     )
-    @PreAuthorize("hasAnyRole('ADMIN','HR','SUPER_ADMIN')")
     @GetMapping
     public ResponseEntity<List<JobResponse>> getAllJobs() {
         List<JobResponse> jobs = jobService.getAllJobs();
@@ -71,7 +68,6 @@ public class JobController {
                     @ApiResponse(responseCode = "404", description = "Job not found", content = @Content)
             }
     )
-    @PreAuthorize("hasAnyRole('ADMIN','HR','SUPER_ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<JobResponse> getJobById(
             @Parameter(description = "ID of the job to retrieve") @PathVariable Long id) {
@@ -90,7 +86,6 @@ public class JobController {
                     @ApiResponse(responseCode = "404", description = "Job not found", content = @Content)
             }
     )
-    @PreAuthorize("hasAnyRole('ADMIN','HR','SUPER_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<JobResponse> updateJob(
             @Parameter(description = "ID of the job to update") @PathVariable Long id,
@@ -108,7 +103,6 @@ public class JobController {
                     @ApiResponse(responseCode = "404", description = "Job not found", content = @Content)
             }
     )
-    @PreAuthorize("hasAnyRole('ADMIN','HR','SUPER_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteJob(
             @Parameter(description = "ID of the job to delete") @PathVariable Long id) {

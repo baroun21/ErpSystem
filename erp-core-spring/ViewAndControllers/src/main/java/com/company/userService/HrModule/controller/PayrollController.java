@@ -13,7 +13,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,7 +35,6 @@ public class PayrollController {
                     @ApiResponse(responseCode = "400", description = "Invalid payroll data", content = @Content)
             }
     )
-    @PreAuthorize("hasAnyRole('ADMIN','HR','SUPER_ADMIN')")
     @PostMapping
     public ResponseEntity<PayrollResponse> createPayroll(
             @Valid @RequestBody PayrollRequest request
@@ -54,7 +52,6 @@ public class PayrollController {
                             content = @Content(schema = @Schema(implementation = PayrollResponse.class)))
             }
     )
-    @PreAuthorize("hasAnyRole('ADMIN','HR','SUPER_ADMIN')")
     @GetMapping
     public ResponseEntity<List<PayrollResponse>> getAllPayrolls() {
         List<PayrollResponse> payrolls = payrollService.getAllPayrolls();
@@ -72,7 +69,6 @@ public class PayrollController {
             }
     )
 
-    @PreAuthorize("hasAnyRole('ADMIN','HR','SUPER_ADMIN')")
     @GetMapping("/{payrollId}")
     public ResponseEntity<PayrollResponse> getPayrollById(
             @Parameter(description = "ID of the payroll entry to retrieve") @PathVariable Long payrollId
@@ -92,7 +88,6 @@ public class PayrollController {
                     @ApiResponse(responseCode = "404", description = "Payroll record not found", content = @Content)
             }
     )
-    @PreAuthorize("hasAnyRole('ADMIN','HR','SUPER_ADMIN')")
     @PutMapping("/{payrollId}")
     public ResponseEntity<PayrollResponse> updatePayroll(
             @Parameter(description = "ID of the payroll entry to update") @PathVariable Long payrollId,
@@ -111,7 +106,6 @@ public class PayrollController {
                     @ApiResponse(responseCode = "404", description = "Payroll record not found", content = @Content)
             }
     )
-    @PreAuthorize("hasAnyRole('ADMIN','HR','SUPER_ADMIN')")
     @DeleteMapping("/{payrollId}")
     public ResponseEntity<Void> deletePayroll(
             @Parameter(description = "ID of the payroll entry to delete") @PathVariable Long payrollId

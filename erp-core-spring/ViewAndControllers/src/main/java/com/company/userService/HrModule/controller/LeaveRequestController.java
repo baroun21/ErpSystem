@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,7 +22,6 @@ public class LeaveRequestController {
     private final LeaveRequestService leaveRequestService;
 
     //  Apply for leave
-    @PreAuthorize("hasAnyRole('ADMIN','HR','SUPER_ADMIN')")
     @PostMapping("/apply")
     @Operation(summary = "Submit a new leave request")
     public ResponseEntity<LeaveRequestResponse> applyLeave(
@@ -32,7 +30,6 @@ public class LeaveRequestController {
     }
 
     //  Approve leave
-    @PreAuthorize("hasAnyRole('ADMIN','HR','SUPER_ADMIN')")
     @PutMapping("/{leaveId}/approve")
     @Operation(summary = "Approve a leave request")
     public ResponseEntity<LeaveRequestResponse> approveLeave(
@@ -41,7 +38,6 @@ public class LeaveRequestController {
     }
 
     //  Reject leave
-    @PreAuthorize("hasAnyRole('ADMIN','HR','SUPER_ADMIN')")
     @PutMapping("/{leaveId}/reject")
     @Operation(summary = "Reject a leave request")
     public ResponseEntity<LeaveRequestResponse> rejectLeave(
@@ -50,7 +46,6 @@ public class LeaveRequestController {
     }
 
     //  Cancel leave
-    @PreAuthorize("hasAnyRole('ADMIN','HR','SUPER_ADMIN')")
     @PutMapping("/{leaveId}/cancel")
     @Operation(summary = "Cancel a leave request")
     public ResponseEntity<LeaveRequestResponse> cancelLeave(
@@ -59,7 +54,6 @@ public class LeaveRequestController {
     }
 
     //  Get all leave requests
-    @PreAuthorize("hasAnyRole('ADMIN','HR','SUPER_ADMIN')")
     @GetMapping
     @Operation(summary = "Get all leave requests")
     public ResponseEntity<List<LeaveRequestResponse>> getAllLeaveRequests() {
@@ -67,7 +61,6 @@ public class LeaveRequestController {
     }
 
     //  Get leave requests by employee
-    @PreAuthorize("hasAnyRole('ADMIN','HR','SUPER_ADMIN')")
     @GetMapping("/employee/{employeeId}")
     @Operation(summary = "Get leave requests by employee ID")
     public ResponseEntity<List<LeaveRequestResponse>> getLeaveRequestsByEmployee(
@@ -76,7 +69,6 @@ public class LeaveRequestController {
     }
 
     //  Get leave requests by status (PENDING, APPROVED, REJECTED, CANCELLED)
-    @PreAuthorize("hasAnyRole('ADMIN','HR','SUPER_ADMIN')")
     @GetMapping("/status/{status}")
     @Operation(summary = "Get leave requests by status")
     public ResponseEntity<List<LeaveRequestResponse>> getLeaveRequestsByStatus(
@@ -86,7 +78,6 @@ public class LeaveRequestController {
     }
 
     //  Optional: Delete leave request (if you want soft delete later)
-    @PreAuthorize("hasAnyRole('ADMIN','HR','SUPER_ADMIN')")
     @DeleteMapping("/{leaveId}")
     @Operation(summary = "Delete a leave request")
     public ResponseEntity<Void> deleteLeave(

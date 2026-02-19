@@ -13,7 +13,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,7 +25,6 @@ public class BonusController {
 
     private final BonusService bonusService;
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/employee/{employeeId}")
     @Operation(
             summary = "Assign a bonus to an employee",
@@ -56,7 +54,6 @@ public class BonusController {
             summary = "Get all bonuses",
             description = "Retrieves a list of all bonus records."
     )
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<BonusResponse>> getAllBonuses() {
         return ResponseEntity.ok(bonusService.getAllBonuses());
@@ -72,7 +69,6 @@ public class BonusController {
                     @ApiResponse(responseCode = "404", description = "Bonus not found", content = @Content)
             }
     )
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<BonusResponse> getBonusById(
             @Parameter(description = "ID of the bonus record") @PathVariable Long id) {
@@ -89,7 +85,6 @@ public class BonusController {
                     @ApiResponse(responseCode = "404", description = "Employee not found", content = @Content)
             }
     )
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/employee/{employeeId}")
     public ResponseEntity<List<BonusResponse>> getBonusesByEmployee(
             @Parameter(description = "ID of the employee") @PathVariable Long employeeId) {
@@ -107,7 +102,6 @@ public class BonusController {
                     @ApiResponse(responseCode = "404", description = "Bonus not found", content = @Content)
             }
     )
-    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<BonusResponse> updateBonus(
             @Parameter(description = "ID of the bonus record") @PathVariable Long id,
@@ -124,7 +118,6 @@ public class BonusController {
                     @ApiResponse(responseCode = "404", description = "Bonus not found", content = @Content)
             }
     )
-    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBonus(
             @Parameter(description = "ID of the bonus record") @PathVariable Long id) {

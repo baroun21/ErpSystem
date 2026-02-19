@@ -8,9 +8,14 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        // Allow Angular dev server (http://localhost:4200) to call backend
+        // Allow local frontend dev servers to call backend
         registry.addMapping("/api/**")
-                .allowedOrigins("http://localhost:4200")
+            .allowedOrigins(
+                "http://localhost:4200",
+                "http://localhost:5173",
+                "http://localhost:5174",
+                "http://localhost:5175"
+            )
                 .allowedMethods("GET","POST","PUT","DELETE","OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true)
