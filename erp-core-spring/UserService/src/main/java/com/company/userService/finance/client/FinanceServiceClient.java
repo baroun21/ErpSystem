@@ -14,8 +14,9 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * REST Client for Django Finance Service
- * Handles all communication with the separate Finance microservice
+ * REST Client for internal finance service calls (within Spring Boot)
+ * Handles communication between modules for cross-service integration
+ * Note: Finance module is integrated in Spring Boot; this client is for module-to-module calls if needed
  */
 @Service
 public class FinanceServiceClient {

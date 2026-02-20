@@ -44,12 +44,10 @@ public class AutomationExecutionLog implements Serializable {
     @Column(name = "status", length = 30)
     private ExecutionStatus status;
 
-    @Lob
-    @Column(name = "message")
+    @Column(name = "message", columnDefinition = "TEXT")
     private String message;
 
-    @Lob
-    @Column(name = "error_details")
+    @Column(name = "error_details", columnDefinition = "TEXT")
     private String errorDetails;
 
     @Column(name = "started_at")
@@ -58,8 +56,7 @@ public class AutomationExecutionLog implements Serializable {
     @Column(name = "finished_at")
     private LocalDateTime finishedAt;
 
-    @Lob
-    @Column(name = "payload")
+    @Column(name = "payload", columnDefinition = "TEXT")
     private String payload;
 
     @Column(name = "created_at", nullable = false, updatable = false)

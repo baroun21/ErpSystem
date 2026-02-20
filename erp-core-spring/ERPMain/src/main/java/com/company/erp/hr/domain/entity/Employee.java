@@ -12,7 +12,7 @@ import java.util.List;
  * Employee entity - represents an employee in the organization
  * Extends BaseEntity for multi-tenant support (company_id), audit trails
  */
-@Entity
+@Entity(name = "HrEmployee")
 @Table(name = "employees", indexes = {
     @Index(name = "idx_emp_company", columnList = "company_id"),
     @Index(name = "idx_emp_department", columnList = "department_id"),

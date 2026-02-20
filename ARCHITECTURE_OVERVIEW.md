@@ -3,7 +3,7 @@
 ## 📊 Complete Finance Module Map
 
 ```
-FINANCE MODULE (React Frontend + Django Backend)
+FINANCE MODULE (React Frontend + Spring Boot Backend)
 │
 ├─ DASHBOARD
 │  └─ FinanceDashboard.jsx (Overview + Key Metrics)
@@ -75,7 +75,7 @@ FINANCE MODULE (React Frontend + Django Backend)
 └─────────────────────────────────────────────────────┘
                         ↓
 ┌─────────────────────────────────────────────────────┐
-│      APPLICATION LAYER (Backend API - Django)       │
+│    APPLICATION LAYER (Backend API - Spring Boot)    │
 │  ┌─────────────────────────────────────────────┐   │
 │  │  RESTful API Endpoints (24 routes)          │   │
 │  │  - CRUD operations for entities             │   │
@@ -85,7 +85,7 @@ FINANCE MODULE (React Frontend + Django Backend)
 └─────────────────────────────────────────────────────┘
                         ↓
 ┌─────────────────────────────────────────────────────┐
-│      DATABASE LAYER (Django ORM - Oracle/SQLite)    │
+│        DATABASE LAYER (JPA/Hibernate - Oracle)      │
 │  ┌─────────────────────────────────────────────┐   │
 │  │  Finance Models                             │   │
 │  │  - Core entities (Companies, Accounts, etc) │   │
@@ -123,7 +123,7 @@ billLineService.create(data) called
            ↓
 POST /api/finance/bill-lines
            ↓
-Django ViewSet processes request
+Spring Boot controller/service processes request
            ↓
 Database INSERT
            ↓

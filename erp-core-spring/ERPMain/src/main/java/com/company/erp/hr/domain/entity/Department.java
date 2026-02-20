@@ -11,7 +11,7 @@ import java.util.List;
  * HR Department entity - represents an organizational department
  * Extends BaseEntity for multi-tenant support (company_id), audit trails
  */
-@Entity
+@Entity(name = "HrDepartment")
 @Table(name = "departments", indexes = {
     @Index(name = "idx_dept_company", columnList = "company_id"),
     @Index(name = "idx_dept_code", columnList = "code")

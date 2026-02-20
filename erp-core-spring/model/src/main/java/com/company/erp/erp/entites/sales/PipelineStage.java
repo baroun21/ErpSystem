@@ -38,7 +38,7 @@ public class PipelineStage implements Serializable {
     @Column(name = "EXPECTED_DURATION_DAYS")
     private Integer expectedDurationDays;
     
-    @Column(name = "ACTIVE", columnDefinition = "CHAR(1) DEFAULT 'Y'")
+    @Column(name = "ACTIVE", length = 1)
     @Builder.Default
     private String active = "Y";
     

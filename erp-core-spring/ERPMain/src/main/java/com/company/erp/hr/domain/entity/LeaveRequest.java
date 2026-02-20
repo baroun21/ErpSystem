@@ -10,7 +10,7 @@ import java.time.LocalDate;
  * LeaveRequest entity - tracks employee leave/time-off requests
  * Extends BaseEntity for multi-tenant support (company_id)
  */
-@Entity
+@Entity(name = "HrLeaveRequest")
 @Table(name = "leave_requests", indexes = {
     @Index(name = "idx_lr_company", columnList = "company_id"),
     @Index(name = "idx_lr_employee", columnList = "employee_id"),

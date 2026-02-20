@@ -13,30 +13,30 @@ import java.util.Optional;
  * DepartmentRepository - handles persistence of Department entities
  * All queries automatically filtered by company_id (multi-tenancy)
  */
-@Repository
+@Repository("erpDepartmentRepository")
 public interface DepartmentRepository extends JpaRepository<Department, Long> {
 
     /**
      * Find department by code within company
      */
-    @Query("SELECT d FROM Department d WHERE d.companyId = :companyId AND d.code = :code")
+    @Query("SELECT d FROM HrDepartment d WHERE d.companyId = :companyId AND d.code = :code")
     Optional<Department> findByCodeInCompany(@Param("companyId") Long companyId, @Param("code") String code);
 
     /**
      * Find all departments in company ordered by name
      */
-    @Query("SELECT d FROM Department d WHERE d.companyId = :companyId ORDER BY d.name")
+    @Query("SELECT d FROM HrDepartment d WHERE d.companyId = :companyId ORDER BY d.name")
     List<Department> findAllInCompany(@Param("companyId") Long companyId);
 
     /**
      * Find department by id and company_id (ensures multi-tenant safety)
      */
-    @Query("SELECT d FROM Department d WHERE d.id = :id AND d.companyId = :companyId")
+    @Query("SELECT d FROM HrDepartment d WHERE d.id = :id AND d.companyId = :companyId")
     Optional<Department> findByIdInCompany(@Param("id") Long id, @Param("companyId") Long companyId);
 
     /**
      * Count departments in company
      */
-    @Query("SELECT COUNT(d) FROM Department d WHERE d.companyId = :companyId")
+    @Query("SELECT COUNT(d) FROM HrDepartment d WHERE d.companyId = :companyId")
     long countInCompany(@Param("companyId") Long companyId);
 }

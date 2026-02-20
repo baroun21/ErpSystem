@@ -14,13 +14,13 @@ import java.util.Optional;
  * AttendanceRepository - handles persistence of Attendance records
  * All queries automatically filtered by company_id (multi-tenancy)
  */
-@Repository
+@Repository("erpAttendanceRepository")
 public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
     /**
      * Find attendance for specific employee, date, and company
      */
-    @Query("SELECT a FROM Attendance a WHERE a.companyId = :companyId AND a.employee.id = :employeeId AND a.attendanceDate = :date")
+    @Query("SELECT a FROM HrAttendance a WHERE a.companyId = :companyId AND a.employee.id = :employeeId AND a.attendanceDate = :date")
     Optional<Attendance> findByEmployeeAndDateInCompany(
         @Param("companyId") Long companyId,
         @Param("employeeId") Long employeeId,
@@ -30,7 +30,7 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
     /**
      * Find attendance records for employee within date range in company
      */
-    @Query("SELECT a FROM Attendance a WHERE a.companyId = :companyId AND a.employee.id = :employeeId " +
+    @Query("SELECT a FROM HrAttendance a WHERE a.companyId = :companyId AND a.employee.id = :employeeId " +
            "AND a.attendanceDate BETWEEN :startDate AND :endDate ORDER BY a.attendanceDate DESC")
     List<Attendance> findByEmployeeAndDateRangeInCompany(
         @Param("companyId") Long companyId,
@@ -42,7 +42,7 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
     /**
      * Find all attendance records for company in date range
      */
-    @Query("SELECT a FROM Attendance a WHERE a.companyId = :companyId " +
+    @Query("SELECT a FROM HrAttendance a WHERE a.companyId = :companyId " +
            "AND a.attendanceDate BETWEEN :startDate AND :endDate ORDER BY a.attendanceDate DESC, a.employee.lastName")
     List<Attendance> findAllInCompanyByDateRange(
         @Param("companyId") Long companyId,
@@ -53,7 +53,7 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
     /**
      * Count present days for employee in date range
      */
-    @Query("SELECT COUNT(a) FROM Attendance a WHERE a.companyId = :companyId AND a.employee.id = :employeeId " +
+    @Query("SELECT COUNT(a) FROM HrAttendance a WHERE a.companyId = :companyId AND a.employee.id = :employeeId " +
            "AND a.status IN ('Present', 'Half Day') AND a.attendanceDate BETWEEN :startDate AND :endDate")
     long countPresentDaysInCompany(
         @Param("companyId") Long companyId,

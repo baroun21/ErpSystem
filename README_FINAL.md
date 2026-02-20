@@ -76,12 +76,13 @@
 - All styling applied
 - All documentation provided
 
-### ⏳ Backend Implementation Needed
-1. **Create Django Models** (for new entities like BillLine)
-2. **Implement API Endpoints** (24 routes total)
-3. **Add Report Services** (calculations for financial statements)
-4. **Configure Authentication** (JWT integration)
-5. **Add Tests** (unit and integration)
+### ⏳ Backend Implementation Needed (Spring Boot)
+1. **Create Finance Entities** (for Invoice, Bill, Journal Entry, Customer, Supplier, etc.)
+2. **Create Spring Boot Controllers** (REST endpoints for finance APIs)
+3. **Create Service Layer** (business logic for accounting, invoicing, ledger queries, reports)
+4. **Add JPA Repositories** (data access for finance entities)
+5. **Add Report Services** (calculations for financial statements)
+6. **Add Tests** (unit and integration)
 
 ### ⏳ Integration Testing
 1. Connect React frontend to Django backend
@@ -225,25 +226,16 @@ AR Aging         - Invoice amounts by age
 
 ### Django Setup
 ```bash
-# Create apps
-python manage.py startapp finance_core
-
-# Models to implement
-- Company, ChartOfAccount, CostCenter
-- JournalEntry, JournalEntryLine
-- Customer, Invoice, InvoiceLine
-- Supplier, Bill, BillLine
-- SupplierPayment, CustomerPayment
-- BankAccount, BankTransaction
+# Finance module runs in Spring Boot (no separate Django setup needed)
 ```
 
-### DRF Implementation
-```python
-# Create serializers for each model
-# Create viewsets for CRUD operations
-# Configure routers
-# Add filtering, searching, pagination
-# Add permission classes
+### Spring Boot Finance Module
+```bash
+# The Finance module is included in Spring Boot
+# Start the Spring Boot application:
+cd erp-core-spring
+./mvnw clean package
+java -jar ERPMain/target/ERPMain-1.0.0.jar
 ```
 
 ### Report Services

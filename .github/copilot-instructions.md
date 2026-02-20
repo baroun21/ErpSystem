@@ -2,7 +2,7 @@
 
 ## Architecture Overview
 
-**Hybrid Microservices Architecture**: Java Spring Boot backend (erp-core-spring) handles core ERP, with a dedicated **Finance Department module** using Django + Django REST Framework (finance-service-django).
+**Single Backend Architecture**: Java Spring Boot backend (erp-core-spring) handles core ERP and the Finance Department module. React provides the frontend UI.
 
 ### Core Components
 
@@ -12,14 +12,14 @@
   - `ViewAndControllers/`: HR module with business logic controllers. Called "LookUps Module" in pom.xml.
   - `ERPMain/`: Aggregator module that wires all services via `@ComponentScan` and `@EntityScan`.
 
-- **finance-service-django**: **Finance Department** microservice built with Django REST Framework. Handles accounting, invoicing, ledgers, and financial reports. Independent from Spring Boot core; communicates via REST API.
+- **Finance module**: Implemented in Spring Boot under `UserService` and shared model module. Handles accounting, invoicing, ledgers, and financial reports.
 
 ### Technology Stack
 
 - **Backend**: Spring Boot 3.2.5, Java 21, Jakarta/Hibernate, MapStruct mappers, Lombok
-- **DB**: Oracle (primary), SQLite (Django dev). Config: `c:\Users\Devoe\ErpSystem\erp-core-spring\UserService\src\main\resources\application.properties`
+- **DB**: Oracle (primary). Config: `c:\Users\Devoe\ErpSystem\erp-core-spring\UserService\src\main\resources\application.properties`
 - **Security**: JWT token auth, Spring Security in UserService
-- **Frontend/Django**: Django 6.0.1, DRF 3.16.1, PostgreSQL driver available
+- **Frontend**: React 18
 
 ## Key Architectural Decisions
 
@@ -41,14 +41,14 @@ cd erp-core-spring
 ### Running
 
 - **Spring services**: `java -jar ERPMain/target/ERPMain-1.0.0.jar` or run `ErpApplication.main()` in IDE (port 8081)
-- **Django Finance service**: `cd finance-service-django && python manage.py runserver` (default port 8000; requires migrations: `python manage.py migrate`)
+- **Finance module**: Runs within Spring Boot (ERPMain) on port 8081
 
 ### Database
 
 - **Oracle** (Spring Boot): Connection string is `jdbc:oracle:thin:@//192.168.115.133:1521/XEPDB1` (user: `userGrade`, password: `user1234`)
   - **DDL strategy**: `spring.jpa.hibernate.ddl-auto=validate` (entities must match schema, no auto-generation)
   - **Dialect**: `OracleDialect` with standard physical naming strategy
-- **SQLite/PostgreSQL** (Django Finance): Config in `finance-service-django/config/settings.py`. Development uses SQLite; production-ready setup available for PostgreSQL via `psycopg2-binary` in requirements.txt
+
 
 ### Testing & Debugging
 
@@ -83,7 +83,7 @@ All modules use Lombok (v1.18.30). Ensure IDE has Lombok plugin installed. Annot
 1. **UserService → model**: Depends on shared entities and mappers
 2. **ViewAndControllers → UserService + model**: Imports both for controllers and entities
 3. **ERPMain**: Wires UserService repositories (`@EnableJpaRepositories` on two packages), entity scans model package, and component-scans all 4 base packages
-4. **Django Finance ↔ Spring Boot**: Planned REST API integration. Finance service will expose endpoints for invoicing, ledger queries, and reports that Spring Boot modules consume via HTTP calls. Not yet implemented.
+4. **Finance module ↔ core ERP**: Finance endpoints and services live inside Spring Boot and share the model module.
 
 ## Common Tasks & Where Code Lives
 
@@ -95,18 +95,16 @@ All modules use Lombok (v1.18.30). Ensure IDE has Lombok plugin installed. Annot
 | Add controller endpoint | `ViewAndControllers/src/main/java/com/company/userService/HrModule/` |
 | Configure security | `UserService/src/main/java/com/company/userService/securityConfig/` |
 | Debug full flow | Start from `ERPMain/src/main/java/com/company/main/ErpApplication.java` |
-| Add finance entity (Invoice, Ledger, etc.) | `finance-service-django/finance/models.py` |
-| Add finance REST endpoint | `finance-service-django/finance/views.py` (use DRF ViewSets) |
-| Add finance serializer (DTO) | `finance-service-django/finance/serializers.py` (create if needed) |
-| Configure Django app | `finance-service-django/config/settings.py` |
+| Add finance entity (Invoice, Ledger, etc.) | `model/src/main/java/com/company/erp/erp/entites/` |
+| Add finance REST endpoint | `UserService/src/main/java/com/company/userService/finance/` |
+| Add finance DTOs | `UserService/src/main/java/com/company/userService/finance/dto/` |
 
 ## Gotchas & Non-Obvious Behavior
 
 - **Module versions are mixed**: model is `0.0.1-SNAPSHOT`, others are `1.0.0`. Be careful with version strings in pom.xml.
 - **ViewAndControllers pom has security commented out** — likely disabled for dev. Re-enable carefully with UserService security config.
 - **Oracle DDL is locked** (`validate` mode) — schema changes require DBA scripts, not JPA auto-generation.
-- **Django Finance is under development** — `models.py` and `views.py` are currently empty. This is where invoice, ledger, and accounting entities will be defined as Django models with DRF serializers/viewsets.
-- **Separate ports**: Spring Boot runs on 8081, Django on 8000. When implementing service-to-service calls, use `http://localhost:8000/api/` for finance endpoints from Spring Boot.
+- **Finance endpoints are part of Spring Boot** — no separate service or port is used for finance.
 
 ## Environment & Dependencies
 
@@ -115,11 +113,8 @@ All modules use Lombok (v1.18.30). Ensure IDE has Lombok plugin installed. Annot
 - **Maven**: 3.6+ (use ./mvnw wrapper)
 - **Oracle JDBC**: ojdbc11 v23.3.0.23.09
 
-### Django Finance Service
-- **Python**: 3.10+ (required by Django 6.0.1)
-- **Django**: 6.0.1 with DRF 3.16.1
-- **Database drivers**: psycopg2-binary (PostgreSQL) available; SQLite used for dev
-- **Setup**: `pip install -r requirements.txt && python manage.py migrate && python manage.py runserver`
+### Finance Module
+- **Runs in Spring Boot**: No separate runtime, CLI, or database setup required beyond ERPMain
 
 ---
 

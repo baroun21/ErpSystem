@@ -13,34 +13,34 @@ import java.util.List;
  * LeaveRequestRepository - handles persistence of LeaveRequest entities
  * All queries automatically filtered by company_id (multi-tenancy)
  */
-@Repository
+@Repository("erpLeaveRequestRepository")
 public interface LeaveRequestRepository extends JpaRepository<LeaveRequest, Long> {
 
     /**
      * Find all leave requests for employee in company
      */
-    @Query("SELECT lr FROM LeaveRequest lr WHERE lr.companyId = :companyId AND lr.employee.id = :employeeId " +
+       @Query("SELECT lr FROM HrLeaveRequest lr WHERE lr.companyId = :companyId AND lr.employee.id = :employeeId " +
            "ORDER BY lr.fromDate DESC")
     List<LeaveRequest> findByEmployeeInCompany(@Param("companyId") Long companyId, @Param("employeeId") Long employeeId);
 
     /**
      * Find pending leave requests for employee in company
      */
-    @Query("SELECT lr FROM LeaveRequest lr WHERE lr.companyId = :companyId AND lr.employee.id = :employeeId " +
+       @Query("SELECT lr FROM HrLeaveRequest lr WHERE lr.companyId = :companyId AND lr.employee.id = :employeeId " +
            "AND lr.status = 'Pending' ORDER BY lr.fromDate")
     List<LeaveRequest> findPendingByEmployeeInCompany(@Param("companyId") Long companyId, @Param("employeeId") Long employeeId);
 
     /**
      * Find all pending leave requests in company (for managers)
      */
-    @Query("SELECT lr FROM LeaveRequest lr WHERE lr.companyId = :companyId AND lr.status = 'Pending' " +
+       @Query("SELECT lr FROM HrLeaveRequest lr WHERE lr.companyId = :companyId AND lr.status = 'Pending' " +
            "ORDER BY lr.fromDate")
     List<LeaveRequest> findAllPendingInCompany(@Param("companyId") Long companyId);
 
     /**
      * Find leave requests for date range in company
      */
-    @Query("SELECT lr FROM LeaveRequest lr WHERE lr.companyId = :companyId " +
+       @Query("SELECT lr FROM HrLeaveRequest lr WHERE lr.companyId = :companyId " +
            "AND ((lr.fromDate <= :endDate AND lr.toDate >= :startDate)) " +
            "ORDER BY lr.fromDate")
     List<LeaveRequest> findByDateRangeInCompany(
@@ -52,9 +52,15 @@ public interface LeaveRequestRepository extends JpaRepository<LeaveRequest, Long
     /**
      * Count approved leave days for employee in year
      */
-    @Query("SELECT SUM(lr.toDate - lr.fromDate + 1) FROM LeaveRequest lr " +
-           "WHERE lr.companyId = :companyId AND lr.employee.id = :employeeId " +
-           "AND lr.status = 'Approved' AND EXTRACT(YEAR FROM lr.fromDate) = :year")
+    @Query(
+        value = "SELECT COALESCE(SUM((lr.to_date - lr.from_date) + 1), 0) " +
+                "FROM leave_requests lr " +
+                "WHERE lr.company_id = :companyId " +
+                "AND lr.employee_id = :employeeId " +
+                "AND lr.status = 'Approved' " +
+                "AND EXTRACT(YEAR FROM lr.from_date) = :year",
+        nativeQuery = true
+    )
     Long countApprovedLeaveDaysInYear(
         @Param("companyId") Long companyId,
         @Param("employeeId") Long employeeId,

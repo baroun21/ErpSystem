@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -51,8 +52,16 @@ public class GlobalExceptionHandlerForHr {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<?> handleNoResourceFound(NoResourceFoundException ex) {
+        return buildResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGeneric(Exception ex) {
+        if (ex instanceof NoResourceFoundException) {
+            return buildResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
+        }
         return buildResponse("Internal server error: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

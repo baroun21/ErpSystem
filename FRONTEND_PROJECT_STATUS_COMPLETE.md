@@ -201,6 +201,8 @@ Project Root/
 
 ### Expected Services (defined in `src/services/api.js`)
 
+All services point to Spring Boot REST endpoints on port 8081 (erp-core-spring):
+
 ```javascript
 // Entity Services
 export { companyService, chartOfAccountsService, costCenterService }

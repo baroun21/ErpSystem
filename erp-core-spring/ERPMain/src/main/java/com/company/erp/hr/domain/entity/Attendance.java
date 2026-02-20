@@ -11,7 +11,7 @@ import java.time.LocalTime;
  * Attendance entity - tracks daily attendance records
  * Extends BaseEntity for multi-tenant support (company_id)
  */
-@Entity
+@Entity(name = "HrAttendance")
 @Table(name = "attendance", indexes = {
     @Index(name = "idx_att_company", columnList = "company_id"),
     @Index(name = "idx_att_employee", columnList = "employee_id"),

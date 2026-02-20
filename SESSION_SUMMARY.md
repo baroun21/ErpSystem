@@ -307,12 +307,13 @@ financeReportService.getAPAging(date, vendorFilter)
 
 ## 📋 Next Steps (Post-Session)
 
-### For Backend Team:
-1. Implement Django models for BillLine
-2. Create DRF serializers and viewsets
-3. Implement report calculation services
-4. Add API authentication
-5. Add API tests and documentation
+### For Backend Team (Spring Boot):
+1. Implement JPA entity classes for finance domain (Company, Invoice, Bill, Customer, Supplier, etc.)
+2. Create Spring Data JPA repositories for all entities
+3. Create DTOs and MapStruct mappers for Entity ↔ DTO conversion
+4. Implement Spring REST controllers with finance API endpoints
+5. Implement service layer with report calculation logic
+6. Add unit and integration tests
 
 ### For Frontend Team:
 1. Update API service file with actual endpoints

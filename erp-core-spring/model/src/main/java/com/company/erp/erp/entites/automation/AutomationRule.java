@@ -57,8 +57,7 @@ public class AutomationRule implements Serializable {
     @Column(name = "action_type", length = 50, nullable = false)
     private ActionType actionType;
 
-    @Lob
-    @Column(name = "action_payload")
+    @Column(name = "action_payload", columnDefinition = "TEXT")
     private String actionPayload;
 
     @Column(name = "last_triggered_at")

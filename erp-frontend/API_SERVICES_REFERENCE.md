@@ -4,7 +4,11 @@ This document lists all the backend services integrated into the frontend.
 
 ## Spring Boot Services (Port 8081)
 
-### Authentication & User Management
+### Finance Module Services (Spring Boot JPA)
+
+All finance endpoints are implemented in Spring Boot and share the same database as the core ERP:
+
+**Base URL**: `http://localhost:8081/api`
 - **authService** - Login, logout, token refresh, password reset
   - `login(credentials)` - User login
   - `logout()` - User logout
@@ -89,6 +93,10 @@ This document lists all the backend services integrated into the frontend.
 ## Django Finance Services (Port 8000)
 
 ### Core Accounting
+
+**DEPRECATED** - Finance module is now integrated into Spring Boot at port 8081. All endpoints below are now served by Spring Boot controllers.
+
+**Old endpoints (for reference)**:
 
 - **companyService** - Company management
   - `getAll()` - Get all companies
@@ -272,6 +280,8 @@ const health = await healthService.checkAll()
 
 - Spring Boot runs on `http://localhost:8081`
 - Django Finance runs on `http://localhost:8000`
+
+**DEPRECATED** - Finance is now in Spring Boot on port 8081
 - All services use proper error handling with try/catch
 - API responses vary by endpoint - check the backend documentation
 - Some endpoints may require authentication (JWT token)

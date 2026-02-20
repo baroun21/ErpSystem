@@ -1,8 +1,8 @@
-# Finance Module Frontend - Backend Integration Guide
+# Finance Module Frontend - Backend Integration Guide (Spring Boot)
 
 ## 🎯 Overview
 
-This guide outlines the API endpoints and data structures required to implement the backend support for all newly created frontend pages in the Finance Module (Phases 2 & 3).
+This guide outlines the API endpoints and data structures required to implement the backend support for all frontend pages in the Finance Module (Phases 1, 2 & 3) using Spring Boot JPA/Hibernate.
 
 ## 📋 Required API Endpoints
 
@@ -246,23 +246,51 @@ GET /api/finance/reports/ap-aging
 
 ## 🗂️ Data Structure Reference
 
-### Bill Line Item
-```python
-# Django Model Example
-class BillLine(models.Model):
-    bill = models.ForeignKey(Bill, on_delete=models.CASCADE)
-    line_number = models.IntegerField()
-    description = models.TextField()
-    quantity = models.DecimalField(max_digits=10, decimal_places=4)
-    unit_price = models.DecimalField(max_digits=12, decimal_places=2)
-    tax_amount = models.DecimalField(max_digits=12, decimal_places=2)
-    cost_center = models.ForeignKey(CostCenter, on_delete=models.SET_NULL, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+### Bill Line Item (JPA Entity)
+```java
+@Entity
+@Table(name = "bill_lines")
+public class BillLine {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     
-    @property
-    def line_total(self):
-        return (self.quantity * self.unit_price) + self.tax_amount
+    @ManyToOne
+    @JoinColumn(name = "bill_id")
+    private Bill bill;
+    
+    @Column(name = "line_number")
+    private Integer lineNumber;
+    
+    @Column(name = "description")
+    private String description;
+    
+    @Column(name = "quantity", precision = 10, scale = 4)
+    private BigDecimal quantity;
+    
+    @Column(name = "unit_price", precision = 12, scale = 2)
+    private BigDecimal unitPrice;
+    
+    @Column(name = "tax_amount", precision = 12, scale = 2)
+    private BigDecimal taxAmount;
+    
+    @ManyToOne
+    @JoinColumn(name = "cost_center_id")
+    private CostCenter costCenter;
+    
+    @CreationTimestamp
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+    
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+    
+    @Transient
+    public BigDecimal getLineTotal() {
+        return (quantity.multiply(unitPrice)).add(taxAmount);
+    }
+}
 ```
 
 ---
@@ -332,50 +360,70 @@ Summary totals by category
 
 ## ✅ Implementation Checklist
 
-- [ ] Create Django models for BillLine (if not exists)
-- [ ] Create Bill Line serializers and viewsets
-- [ ] Implement Bill Line CRUD endpoints
-- [ ] Create Income Statement calculation service
-- [ ] Create Balance Sheet calculation service
-- [ ] Create Cash Flow Statement calculation service
-- [ ] Create AP Aging calculation service
-- [ ] Add report permissions/authorization
+- [ ] Create JPA Entity classes for finance domain (Bill, Invoice, Customer, Supplier, etc.)
+- [ ] Create Spring Data JPA repositories for all entities
+- [ ] Create DTOs for API request/response payloads
+- [ ] Create MapStruct mappers for Entity ↔ DTO conversion
+- [ ] Create Spring REST controllers with endpoints
+- [ ] Implement service layer with business logic
+- [ ] Implement report calculation services
+- [ ] Add request validation (@Valid, @NotNull, etc.)
 - [ ] Add API documentation (Swagger/OpenAPI)
-- [ ] Add unit tests for report calculations
-- [ ] Add integration tests for all endpoints
+- [ ] Add unit tests for services
+- [ ] Add integration tests for controllers
 - [ ] Performance optimization for large datasets
-- [ ] Add caching for report data (optional but recommended)
+- [ ] Add caching for report data (optional)
 
 ---
 
 ## 🧪 Example Test Cases
 
-### Bill Lines
-```python
-# Test creating bill line with valid data
-# Test creating bill line with invalid quantity
-# Test deleting bill line
-# Test filtering bill lines by billId
+### Bill Lines (Spring Boot / Mockito)
+```java
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class BillLineControllerTest {
+    @Test
+    public void testCreateBillLine() { ... }
+    @Test
+    public void testBillLineWithInvalidQuantity() { ... }
+    @Test
+    public void testDeleteBillLine() { ... }
+    @Test
+    public void testFilterBillLinesByBillId() { ... }
+}
 ```
 
-### Reports
-```python
-# Test income statement for full year
-# Test income statement for Q1
-# Test balance sheet on specific date
-# Test cash flow statement
-# Test AP aging with different date ranges
+### Reports (Service Layer Tests)
+```java
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class FinanceReportServiceTest {
+    @Test
+    public void testIncomeStatementForFullYear() { ... }
+    @Test
+    public void testIncomeStatementForQ1() { ... }
+    @Test
+    public void testBalanceSheetOnSpecificDate() { ... }
+    @Test
+    public void testCashFlowStatement() { ... }
+    @Test
+    public void testAPAgingWithDifferentDateRanges() { ... }
+}
 ```
 
 ---
 
 ## 📝 Notes
 
-- All monetary values should use `Decimal` type for accuracy
-- Dates should be ISO 8601 format (YYYY-MM-DD)
+- All monetary values should use `BigDecimal` for accuracy (Spring Data JPA best practice)
+- Dates should be `LocalDate` or `LocalDateTime` (Java Time API)
 - All reports are read-only (GET endpoints only)
-- Report generation may require background jobs for large datasets
-- Consider implementing report caching to improve performance
+- Report generation may require caching for large datasets
+- Use MapStruct for Entity → DTO conversion
+- Add `@Transactional` to service methods for transaction management
+- Use Spring Data JPA `@Query` for complex database operations
+- Follow Spring Boot naming conventions for repositories and services
 
 ---
 
