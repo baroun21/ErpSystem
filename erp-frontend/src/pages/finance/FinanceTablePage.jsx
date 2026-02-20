@@ -81,10 +81,12 @@ export default function FinanceTablePage({
   return (
     <>
       <div className="finance-page">
-        <div className="finance-page-header">
+          <div className="finance-page-header">
           <div className="table-header-flex">
             <span className="finance-title-wrapper"><h2 className="finance-title">{title}</h2><p className="finance-subtitle">Finance module data from Spring Boot.</p></span>
-            <button className="finance-btn-primary" onClick={() => setShowForm(true)}>+ Add {itemName || 'Item'}</button>
+            {FormComponent && (
+              <button className="finance-btn-primary" onClick={() => setShowForm(true)}>+ Add {itemName || 'Item'}</button>
+            )}
           </div>
           <div className="finance-meta">{items.length} records</div>
         </div>

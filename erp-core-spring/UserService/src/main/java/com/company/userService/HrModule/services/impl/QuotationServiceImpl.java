@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +38,7 @@ public class QuotationServiceImpl implements QuotationService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<QuotationDTO> getQuotationById(Long companyId, Long quotationId) {
+    public Optional<QuotationDTO> getQuotationById(String companyId, Long quotationId) {
         return quotationRepository.findById(quotationId)
             .filter(q -> q.getCompanyId().equals(companyId))
             .map(quotationMapper::toDTO);
@@ -47,7 +46,7 @@ public class QuotationServiceImpl implements QuotationService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<QuotationDTO> getQuotationsByStatus(Long companyId, String status) {
+    public List<QuotationDTO> getQuotationsByStatus(String companyId, String status) {
         log.info("Fetching quotations for company: {} with status: {}", companyId, status);
         return quotationRepository.findByCompanyAndStatus(companyId, status)
             .stream()
@@ -57,7 +56,7 @@ public class QuotationServiceImpl implements QuotationService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<QuotationDTO> getQuotationsByLead(Long companyId, Long leadId) {
+    public List<QuotationDTO> getQuotationsByLead(String companyId, Long leadId) {
         log.info("Fetching quotations for company: {} and lead: {}", companyId, leadId);
         return quotationRepository.findByCompanyAndLead(companyId, leadId)
             .stream()
@@ -67,7 +66,7 @@ public class QuotationServiceImpl implements QuotationService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<QuotationDTO> getDraftQuotes(Long companyId) {
+    public List<QuotationDTO> getDraftQuotes(String companyId) {
         log.info("Fetching draft quotations for company: {}", companyId);
         return quotationRepository.findDraftQuotes(companyId)
             .stream()
@@ -77,7 +76,7 @@ public class QuotationServiceImpl implements QuotationService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<QuotationDTO> getApprovedQuotes(Long companyId) {
+    public List<QuotationDTO> getApprovedQuotes(String companyId) {
         log.info("Fetching approved quotations for company: {}", companyId);
         return quotationRepository.findApprovedQuotes(companyId)
             .stream()
@@ -87,7 +86,7 @@ public class QuotationServiceImpl implements QuotationService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<QuotationDTO> getExpiredQuotes(Long companyId) {
+    public List<QuotationDTO> getExpiredQuotes(String companyId) {
         log.info("Fetching expired quotations for company: {}", companyId);
         return quotationRepository.findExpiredQuotes(companyId)
             .stream()
@@ -97,7 +96,7 @@ public class QuotationServiceImpl implements QuotationService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<QuotationDTO> getConvertibleQuotes(Long companyId) {
+    public List<QuotationDTO> getConvertibleQuotes(String companyId) {
         log.info("Fetching convertible quotations for company: {}", companyId);
         return quotationRepository.findConvertibleQuotes(companyId)
             .stream()
@@ -107,7 +106,7 @@ public class QuotationServiceImpl implements QuotationService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<QuotationDTO> getQuotationsByDateRange(Long companyId, LocalDate startDate, LocalDate endDate) {
+    public List<QuotationDTO> getQuotationsByDateRange(String companyId, LocalDateTime startDate, LocalDateTime endDate) {
         return quotationRepository.findByDateRange(companyId, startDate, endDate)
             .stream()
             .map(quotationMapper::toDTO)
@@ -115,7 +114,7 @@ public class QuotationServiceImpl implements QuotationService {
     }
 
     @Override
-    public QuotationDTO updateQuotation(Long companyId, Long quotationId, QuotationDTO quotationDTO) {
+    public QuotationDTO updateQuotation(String companyId, Long quotationId, QuotationDTO quotationDTO) {
         log.info("Updating quotation: {} for company: {}", quotationId, companyId);
         Quotation quotation = quotationRepository.findById(quotationId)
             .filter(q -> q.getCompanyId().equals(companyId))
@@ -128,7 +127,7 @@ public class QuotationServiceImpl implements QuotationService {
     }
 
     @Override
-    public QuotationDTO sendQuotation(Long companyId, Long quotationId) {
+    public QuotationDTO sendQuotation(String companyId, Long quotationId) {
         log.info("Sending quotation: {}", quotationId);
         Quotation quotation = quotationRepository.findById(quotationId)
             .filter(q -> q.getCompanyId().equals(companyId))
@@ -141,14 +140,14 @@ public class QuotationServiceImpl implements QuotationService {
     }
 
     @Override
-    public QuotationDTO approveQuotation(Long companyId, Long quotationId, Long approvedBy) {
+    public QuotationDTO approveQuotation(String companyId, Long quotationId, String approvedBy) {
         log.info("Approving quotation: {} by user: {}", quotationId, approvedBy);
         Quotation quotation = quotationRepository.findById(quotationId)
             .filter(q -> q.getCompanyId().equals(companyId))
             .orElseThrow(() -> new RuntimeException("Quotation not found or access denied"));
         
         quotation.setStatus("ACCEPTED");
-        quotation.setApprovedBy(approvedBy != null ? approvedBy.toString() : null);
+        quotation.setApprovedBy(approvedBy);
         quotation.setApprovalDate(LocalDateTime.now());
         quotation.setUpdatedAt(LocalDateTime.now());
         Quotation updated = quotationRepository.save(quotation);
@@ -156,7 +155,7 @@ public class QuotationServiceImpl implements QuotationService {
     }
 
     @Override
-    public QuotationDTO rejectQuotation(Long companyId, Long quotationId) {
+    public QuotationDTO rejectQuotation(String companyId, Long quotationId) {
         log.info("Rejecting quotation: {}", quotationId);
         Quotation quotation = quotationRepository.findById(quotationId)
             .filter(q -> q.getCompanyId().equals(companyId))
@@ -169,7 +168,7 @@ public class QuotationServiceImpl implements QuotationService {
     }
 
     @Override
-    public Long convertQuotationToSalesOrder(Long companyId, Long quotationId, Long salesOrderId) {
+    public Long convertQuotationToSalesOrder(String companyId, Long quotationId, Long salesOrderId) {
         log.info("Converting quotation: {} to sales order: {}", quotationId, salesOrderId);
         Quotation quotation = quotationRepository.findById(quotationId)
             .filter(q -> q.getCompanyId().equals(companyId))
@@ -183,7 +182,7 @@ public class QuotationServiceImpl implements QuotationService {
     }
 
     @Override
-    public void deleteQuotation(Long companyId, Long quotationId) {
+    public void deleteQuotation(String companyId, Long quotationId) {
         log.info("Deleting quotation: {} for company: {}", quotationId, companyId);
         Quotation quotation = quotationRepository.findById(quotationId)
             .filter(q -> q.getCompanyId().equals(companyId))
@@ -193,14 +192,14 @@ public class QuotationServiceImpl implements QuotationService {
 
     @Override
     @Transactional(readOnly = true)
-    public BigDecimal calculateAcceptedQuotesValue(Long companyId) {
+    public BigDecimal calculateAcceptedQuotesValue(String companyId) {
         log.info("Calculating accepted quotes value for company: {}", companyId);
         return quotationRepository.calculateAcceptedQuotesValue(companyId);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Long countByStatus(Long companyId, String status) {
+    public Long countByStatus(String companyId, String status) {
         return quotationRepository.countByStatus(companyId, status);
     }
 }

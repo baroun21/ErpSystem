@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +38,7 @@ public class OpportunityServiceImpl implements OpportunityService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<OpportunityDTO> getOpportunityById(Long companyId, Long opportunityId) {
+    public Optional<OpportunityDTO> getOpportunityById(String companyId, Long opportunityId) {
         return opportunityRepository.findById(opportunityId)
             .filter(opp -> opp.getCompanyId().equals(companyId))
             .map(opportunityMapper::toDTO);
@@ -47,7 +46,7 @@ public class OpportunityServiceImpl implements OpportunityService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<OpportunityDTO> getOpportunitiesByStatus(Long companyId, String status) {
+    public List<OpportunityDTO> getOpportunitiesByStatus(String companyId, String status) {
         log.info("Fetching opportunities for company: {} with status: {}", companyId, status);
         return opportunityRepository.findByCompanyAndStatus(companyId, status)
             .stream()
@@ -57,7 +56,7 @@ public class OpportunityServiceImpl implements OpportunityService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<OpportunityDTO> getOpportunitiesByStage(Long companyId, Long stageId) {
+    public List<OpportunityDTO> getOpportunitiesByStage(String companyId, Long stageId) {
         log.info("Fetching opportunities for company: {} in stage: {}", companyId, stageId);
         return opportunityRepository.findByCompanyAndStage(companyId, stageId)
             .stream()
@@ -67,7 +66,7 @@ public class OpportunityServiceImpl implements OpportunityService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<OpportunityDTO> getOpportunitiesByLead(Long companyId, Long leadId) {
+    public List<OpportunityDTO> getOpportunitiesByLead(String companyId, Long leadId) {
         return opportunityRepository.findByCompanyAndLead(companyId, leadId)
             .stream()
             .map(opportunityMapper::toDTO)
@@ -76,7 +75,7 @@ public class OpportunityServiceImpl implements OpportunityService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<OpportunityDTO> getOpportunitiesByCloseDateRange(Long companyId, LocalDate startDate, LocalDate endDate) {
+    public List<OpportunityDTO> getOpportunitiesByCloseDateRange(String companyId, LocalDateTime startDate, LocalDateTime endDate) {
         return opportunityRepository.findByCloseDateRange(companyId, startDate, endDate)
             .stream()
             .map(opportunityMapper::toDTO)
@@ -85,7 +84,7 @@ public class OpportunityServiceImpl implements OpportunityService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<OpportunityDTO> getHighProbabilityOpportunities(Long companyId, Integer minProbability) {
+    public List<OpportunityDTO> getHighProbabilityOpportunities(String companyId, Integer minProbability) {
         return opportunityRepository.findHighProbabilityOpportunities(companyId, minProbability)
             .stream()
             .map(opportunityMapper::toDTO)
@@ -93,7 +92,7 @@ public class OpportunityServiceImpl implements OpportunityService {
     }
 
     @Override
-    public OpportunityDTO updateOpportunity(Long companyId, Long opportunityId, OpportunityDTO opportunityDTO) {
+    public OpportunityDTO updateOpportunity(String companyId, Long opportunityId, OpportunityDTO opportunityDTO) {
         log.info("Updating opportunity: {} for company: {}", opportunityId, companyId);
         Opportunity opportunity = opportunityRepository.findById(opportunityId)
             .filter(opp -> opp.getCompanyId().equals(companyId))
@@ -106,7 +105,7 @@ public class OpportunityServiceImpl implements OpportunityService {
     }
 
     @Override
-    public OpportunityDTO winOpportunity(Long companyId, Long opportunityId) {
+    public OpportunityDTO winOpportunity(String companyId, Long opportunityId) {
         log.info("Marking opportunity as won: {}", opportunityId);
         Opportunity opportunity = opportunityRepository.findById(opportunityId)
             .filter(opp -> opp.getCompanyId().equals(companyId))
@@ -120,7 +119,7 @@ public class OpportunityServiceImpl implements OpportunityService {
     }
 
     @Override
-    public OpportunityDTO loseOpportunity(Long companyId, Long opportunityId) {
+    public OpportunityDTO loseOpportunity(String companyId, Long opportunityId) {
         log.info("Marking opportunity as lost: {}", opportunityId);
         Opportunity opportunity = opportunityRepository.findById(opportunityId)
             .filter(opp -> opp.getCompanyId().equals(companyId))
@@ -134,7 +133,7 @@ public class OpportunityServiceImpl implements OpportunityService {
     }
 
     @Override
-    public void deleteOpportunity(Long companyId, Long opportunityId) {
+    public void deleteOpportunity(String companyId, Long opportunityId) {
         log.info("Deleting opportunity: {} for company: {}", opportunityId, companyId);
         Opportunity opportunity = opportunityRepository.findById(opportunityId)
             .filter(opp -> opp.getCompanyId().equals(companyId))
@@ -144,20 +143,20 @@ public class OpportunityServiceImpl implements OpportunityService {
 
     @Override
     @Transactional(readOnly = true)
-    public BigDecimal calculateRevenueForecast(Long companyId) {
+    public BigDecimal calculateRevenueForecast(String companyId) {
         log.info("Calculating revenue forecast for company: {}", companyId);
         return opportunityRepository.calculateRevenueForecast(companyId);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Long countOpenOpportunities(Long companyId) {
+    public Long countOpenOpportunities(String companyId) {
         return opportunityRepository.countOpenOpportunities(companyId);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<OpportunityDTO> getForecastingOpportunities(Long companyId) {
+    public List<OpportunityDTO> getForecastingOpportunities(String companyId) {
         return opportunityRepository.findForecasting(companyId)
             .stream()
             .map(opportunityMapper::toDTO)

@@ -4,6 +4,8 @@ import com.company.erp.erp.Dtos.sales.LeadDTO;
 import com.company.erp.erp.entites.sales.Lead;
 import com.company.erp.mapper.sales.LeadMapper;
 import com.company.userService.HrModule.repositories.LeadRepository;
+import com.company.userService.HrModule.services.impl.LeadServiceImpl;
+import org.mapstruct.factory.Mappers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +27,11 @@ public class LeadServiceTest {
 
     private LeadService leadService;
     private LeadMapper leadMapper;
-    private Long testCompanyId = 1L;
+    private String testCompanyId = "COMP-1";
 
     @BeforeEach
     void setUp() {
-        leadMapper = new LeadMapper() {};
+        leadMapper = Mappers.getMapper(LeadMapper.class);
         leadService = new LeadServiceImpl(leadRepository, leadMapper);
     }
 
@@ -44,10 +46,8 @@ public class LeadServiceTest {
             .phone("555-1234")
             .companyName("Acme Corp")
             .jobTitle("Manager")
-            .source("LinkedIn")
-            .status("NEW")
             .estimatedValue(BigDecimal.valueOf(50000))
-            .assignedTo(1L)
+            .assignedTo("REP-1")
             .build();
 
         // Act
@@ -55,7 +55,7 @@ public class LeadServiceTest {
 
         // Assert
         assertNotNull(created);
-        assertNotNull(created.getId());
+        assertNotNull(created.getLeadId());
         assertEquals("John", created.getFirstName());
         assertEquals("Doe", created.getLastName());
     }
@@ -78,7 +78,7 @@ public class LeadServiceTest {
         leadRepository.saveAll(List.of(lead1, lead2));
 
         // Act
-        List<LeadDTO> qualified = leadService.getLeadsByCompanyAndStatus(testCompanyId, "QUALIFIED");
+        List<LeadDTO> qualified = leadService.getLeadsByStatus(testCompanyId, "QUALIFIED");
 
         // Assert
         assertEquals(1, qualified.size());
@@ -102,7 +102,7 @@ public class LeadServiceTest {
             .build();
 
         // Act
-        LeadDTO updated = leadService.updateLead(testCompanyId, saved.getId(), updateDTO);
+        LeadDTO updated = leadService.updateLead(testCompanyId, saved.getLeadId(), updateDTO);
 
         // Assert
         assertEquals("Updated", updated.getFirstName());
@@ -120,10 +120,10 @@ public class LeadServiceTest {
         Lead saved = leadRepository.save(lead);
 
         // Act
-        leadService.deleteLead(testCompanyId, saved.getId());
+        leadService.deleteLead(testCompanyId, saved.getLeadId());
 
         // Assert
-        assertTrue(leadRepository.findById(saved.getId()).isEmpty());
+        assertTrue(leadRepository.findById(saved.getLeadId()).isEmpty());
     }
 
     @Test

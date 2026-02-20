@@ -51,6 +51,7 @@ const navSections = [
       { to: '/finance/income-statement', label: 'Income Statement' },
       { to: '/finance/balance-sheet', label: 'Balance Sheet' },
       { to: '/finance/cash-flow', label: 'Cash Flow Statement' },
+      { to: '/finance/cash-intelligence', label: 'Cash Intelligence' },
     ],
   },
   {

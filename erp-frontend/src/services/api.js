@@ -154,6 +154,146 @@ export const hrUserRoleService = {
   delete: (id) => springApi.delete(`/hr/roles/${id}`),
 };
 
+// ============ SALES / CRM SERVICES ============
+
+export const salesLeadService = {
+  getById: (companyId, leadId) => springApi.get(`/sales/leads/${companyId}/${leadId}`),
+  getByStatus: (companyId, status) => springApi.get(`/sales/leads/company/${companyId}/status/${status}`),
+  getBySource: (companyId, source) => springApi.get(`/sales/leads/company/${companyId}/source/${source}`),
+  getAssigned: (companyId, assignedTo) => springApi.get(`/sales/leads/company/${companyId}/assigned/${assignedTo}`),
+  getHighValue: (companyId, minValue) => springApi.get(`/sales/leads/company/${companyId}/high-value`, { params: { minValue } }),
+  getByDateRange: (companyId, startDate, endDate) => springApi.get(`/sales/leads/company/${companyId}/date-range`, { params: { startDate, endDate } }),
+  searchByEmail: (companyId, email) => springApi.get(`/sales/leads/company/${companyId}/search`, { params: { email } }),
+  countByStatus: (companyId, status) => springApi.get(`/sales/leads/company/${companyId}/count-by-status/${status}`),
+  create: (data) => springApi.post('/sales/leads', data),
+  update: (companyId, leadId, data) => springApi.put(`/sales/leads/${companyId}/${leadId}`, data),
+  delete: (companyId, leadId) => springApi.delete(`/sales/leads/${companyId}/${leadId}`),
+}
+
+export const salesOpportunityService = {
+  getById: (companyId, id) => springApi.get(`/sales/opportunities/${companyId}/${id}`),
+  getByStatus: (companyId, status) => springApi.get(`/sales/opportunities/company/${companyId}/status/${status}`),
+  getByStage: (companyId, stageId) => springApi.get(`/sales/opportunities/company/${companyId}/stage/${stageId}`),
+  getByLead: (companyId, leadId) => springApi.get(`/sales/opportunities/company/${companyId}/lead/${leadId}`),
+  getByCloseDateRange: (companyId, startDate, endDate) => springApi.get(`/sales/opportunities/company/${companyId}/close-date-range`, { params: { startDate, endDate } }),
+  getHighProbability: (companyId, minProbability) => springApi.get(`/sales/opportunities/company/${companyId}/high-probability`, { params: { minProbability } }),
+  getForecasting: (companyId) => springApi.get(`/sales/opportunities/company/${companyId}/forecast`),
+  calculateRevenueForecast: (companyId) => springApi.get(`/sales/opportunities/company/${companyId}/revenue-forecast`),
+  countOpen: (companyId) => springApi.get(`/sales/opportunities/company/${companyId}/count-open`),
+  create: (data) => springApi.post('/sales/opportunities', data),
+  update: (companyId, id, data) => springApi.put(`/sales/opportunities/${companyId}/${id}`, data),
+  win: (companyId, id) => springApi.put(`/sales/opportunities/${companyId}/${id}/win`),
+  lose: (companyId, id) => springApi.put(`/sales/opportunities/${companyId}/${id}/lose`),
+  delete: (companyId, id) => springApi.delete(`/sales/opportunities/${companyId}/${id}`),
+}
+
+export const salesQuotationService = {
+  getById: (companyId, id) => springApi.get(`/sales/quotations/${companyId}/${id}`),
+  getByStatus: (companyId, status) => springApi.get(`/sales/quotations/company/${companyId}/status/${status}`),
+  getByLead: (companyId, leadId) => springApi.get(`/sales/quotations/company/${companyId}/lead/${leadId}`),
+  getDraft: (companyId) => springApi.get(`/sales/quotations/company/${companyId}/draft`),
+  getApproved: (companyId) => springApi.get(`/sales/quotations/company/${companyId}/approved`),
+  getExpired: (companyId) => springApi.get(`/sales/quotations/company/${companyId}/expired`),
+  getConvertible: (companyId) => springApi.get(`/sales/quotations/company/${companyId}/convertible`),
+  getByDateRange: (companyId, startDate, endDate) => springApi.get(`/sales/quotations/company/${companyId}/date-range`, { params: { startDate, endDate } }),
+  calculateAcceptedValue: (companyId) => springApi.get(`/sales/quotations/company/${companyId}/accepted-value`),
+  countByStatus: (companyId, status) => springApi.get(`/sales/quotations/company/${companyId}/count-by-status/${status}`),
+  create: (data) => springApi.post('/sales/quotations', data),
+  update: (companyId, id, data) => springApi.put(`/sales/quotations/${companyId}/${id}`, data),
+  send: (companyId, id) => springApi.put(`/sales/quotations/${companyId}/${id}/send`),
+  approve: (companyId, id, approvedBy) => springApi.put(`/sales/quotations/${companyId}/${id}/approve`, null, { params: { approvedBy } }),
+  reject: (companyId, id) => springApi.put(`/sales/quotations/${companyId}/${id}/reject`),
+  convertToOrder: (companyId, id, salesOrderId) => springApi.put(`/sales/quotations/${companyId}/${id}/convert-to-order`, null, { params: { salesOrderId } }),
+  delete: (companyId, id) => springApi.delete(`/sales/quotations/${companyId}/${id}`),
+}
+
+export const salesOrderService = {
+  getById: (companyId, id) => springApi.get(`/sales/orders/${companyId}/${id}`),
+  getByStatus: (companyId, status) => springApi.get(`/sales/orders/company/${companyId}/status/${status}`),
+  getByCustomer: (companyId, customerId) => springApi.get(`/sales/orders/company/${companyId}/customer/${customerId}`),
+  getByDateRange: (companyId, startDate, endDate) => springApi.get(`/sales/orders/company/${companyId}/date-range`, { params: { startDate, endDate } }),
+  getOverdue: (companyId) => springApi.get(`/sales/orders/company/${companyId}/overdue`),
+  getUnpaid: (companyId) => springApi.get(`/sales/orders/company/${companyId}/unpaid`),
+  getHighValue: (companyId, minAmount) => springApi.get(`/sales/orders/company/${companyId}/high-value`, { params: { minAmount } }),
+  getByOpportunity: (companyId, opportunityId) => springApi.get(`/sales/orders/company/${companyId}/opportunity/${opportunityId}`),
+  calculateCustomerLifetimeValue: (companyId, customerId) => springApi.get(`/sales/orders/company/${companyId}/customer/${customerId}/lifetime-value`),
+  calculateRevenue: (companyId, startDate, endDate) => springApi.get(`/sales/orders/company/${companyId}/revenue`, { params: { startDate, endDate } }),
+  countCustomerOrders: (companyId, customerId) => springApi.get(`/sales/orders/company/${companyId}/customer/${customerId}/order-count`),
+  create: (data) => springApi.post('/sales/orders', data),
+  update: (companyId, id, data) => springApi.put(`/sales/orders/${companyId}/${id}`, data),
+  confirm: (companyId, id) => springApi.put(`/sales/orders/${companyId}/${id}/confirm`),
+  ship: (companyId, id) => springApi.put(`/sales/orders/${companyId}/${id}/ship`),
+  deliver: (companyId, id) => springApi.put(`/sales/orders/${companyId}/${id}/deliver`),
+  cancel: (companyId, id) => springApi.put(`/sales/orders/${companyId}/${id}/cancel`),
+  delete: (companyId, id) => springApi.delete(`/sales/orders/${companyId}/${id}`),
+}
+
+export const salesRiskScoreService = {
+  getById: (companyId, id) => springApi.get(`/sales/risk-scores/${companyId}/${id}`),
+  getByCustomer: (companyId, customerId) => springApi.get(`/sales/risk-scores/company/${companyId}/customer/${customerId}`),
+  getByLevel: (companyId, level) => springApi.get(`/sales/risk-scores/company/${companyId}/risk-level/${level}`),
+  getAtRisk: (companyId) => springApi.get(`/sales/risk-scores/company/${companyId}/at-risk`),
+  getHighDso: (companyId, dsoThreshold) => springApi.get(`/sales/risk-scores/company/${companyId}/high-dso`, { params: { dsoThreshold } }),
+  getLatePayers: (companyId) => springApi.get(`/sales/risk-scores/company/${companyId}/late-payers`),
+  getWithOverdue: (companyId) => springApi.get(`/sales/risk-scores/company/${companyId}/with-overdue`),
+  getLowCredit: (companyId, minCredit) => springApi.get(`/sales/risk-scores/company/${companyId}/low-credit`, { params: { minCredit } }),
+  getCreditLimitExceeded: (companyId) => springApi.get(`/sales/risk-scores/company/${companyId}/credit-limit-exceeded`),
+  getReviewDue: (companyId) => springApi.get(`/sales/risk-scores/company/${companyId}/review-due`),
+  getByStatus: (companyId, status) => springApi.get(`/sales/risk-scores/company/${companyId}/status/${status}`),
+  calculateTotalRiskExposure: (companyId) => springApi.get(`/sales/risk-scores/company/${companyId}/total-risk-exposure`),
+  create: (data) => springApi.post('/sales/risk-scores', data),
+  update: (companyId, id, data) => springApi.put(`/sales/risk-scores/${companyId}/${id}`, data),
+  recalculate: (companyId, customerId) => springApi.put(`/sales/risk-scores/company/${companyId}/customer/${customerId}/recalculate`),
+  delete: (companyId, id) => springApi.delete(`/sales/risk-scores/${companyId}/${id}`),
+}
+
+export const salesAnalyticsService = {
+  revenueForecast: (companyId) => springApi.get(`/sales/analytics/company/${companyId}/revenue-forecast`),
+  forecastByStage: (companyId) => springApi.get(`/sales/analytics/company/${companyId}/forecast-by-stage`),
+  forecastDetailed: (companyId) => springApi.get(`/sales/analytics/company/${companyId}/forecast-detailed`),
+  forecastByMonth: (companyId) => springApi.get(`/sales/analytics/company/${companyId}/forecast-by-month`),
+  bestCase: (companyId) => springApi.get(`/sales/analytics/company/${companyId}/best-case-revenue`),
+  worstCase: (companyId) => springApi.get(`/sales/analytics/company/${companyId}/worst-case-revenue`),
+  mostLikely: (companyId) => springApi.get(`/sales/analytics/company/${companyId}/most-likely-revenue`),
+  averageDealSize: (companyId) => springApi.get(`/sales/analytics/company/${companyId}/average-deal-size`),
+  forecastConcentration: (companyId) => springApi.get(`/sales/analytics/company/${companyId}/forecast-concentration`),
+  customerProfit: (companyId, customerId) => springApi.get(`/sales/analytics/company/${companyId}/customer/${customerId}/profit-analysis`),
+  topCustomers: (companyId, limit) => springApi.get(`/sales/analytics/company/${companyId}/top-profitable-customers`, { params: { limit } }),
+  profitabilitySummary: (companyId) => springApi.get(`/sales/analytics/company/${companyId}/profitability-summary`),
+  highMarginSales: (companyId, minMargin) => springApi.get(`/sales/analytics/company/${companyId}/high-margin-sales`, { params: { minMargin } }),
+  dso: (companyId, days) => springApi.get(`/sales/analytics/company/${companyId}/dso`, { params: { days } }),
+  dsoByCustomer: (companyId, minDSO) => springApi.get(`/sales/analytics/company/${companyId}/dso-by-customer`, { params: { minDSO } }),
+  overdueSummary: (companyId) => springApi.get(`/sales/analytics/company/${companyId}/overdue-summary`),
+  paymentHistory: (companyId, customerId, months) => springApi.get(`/sales/analytics/company/${companyId}/customer/${customerId}/payment-history`, { params: { months } }),
+  paymentPatterns: (companyId) => springApi.get(`/sales/analytics/company/${companyId}/payment-patterns`),
+  paymentRiskCustomers: (companyId) => springApi.get(`/sales/analytics/company/${companyId}/payment-risk-customers`),
+}
+
+// ============ AUTOMATION ENGINE SERVICES ============
+
+export const automationRuleService = {
+  getAll: (companyId) => springApi.get('/automation/rules', { params: { companyId } }),
+  getById: (ruleId) => springApi.get(`/automation/rules/${ruleId}`),
+  create: (data) => springApi.post('/automation/rules', data),
+  update: (ruleId, data) => springApi.put(`/automation/rules/${ruleId}`, data),
+  toggle: (ruleId, enabled) => springApi.put(`/automation/rules/${ruleId}/toggle`, null, { params: { enabled } }),
+  delete: (ruleId) => springApi.delete(`/automation/rules/${ruleId}`),
+  execute: (ruleId) => springApi.post(`/automation/rules/${ruleId}/execute`),
+}
+
+export const automationLogService = {
+  getAll: (ruleId) => springApi.get('/automation/logs', { params: { ruleId } }),
+  getById: (logId) => springApi.get(`/automation/logs/${logId}`),
+}
+
+// ============ CASH INTELLIGENCE SERVICES ============
+
+export const cashIntelligenceService = {
+  startJob: (companyId) => springApi.post('/cash-intelligence/jobs', null, { params: { companyId } }),
+  getJob: (jobId) => springApi.get(`/cash-intelligence/jobs/${jobId}`),
+  simulate: (data) => springApi.post('/cash-intelligence/simulate', data),
+}
+
 // ============ FINANCE SERVICES ============
 
 // Core Accounting
@@ -302,6 +442,17 @@ export const cashFlowService = {
   generate: (data) => springApi.post('/cash-flow/generate', data),
 };
 
+export const financeReportService = {
+  getIncomeStatement: (fiscalYear, period) =>
+    incomeStatementService.generate({ fiscalYear, period }),
+  getBalanceSheet: (asOfDate) =>
+    balanceSheetService.generate({ asOfDate }),
+  getCashFlowStatement: (fiscalYear, period) =>
+    cashFlowService.generate({ fiscalYear, period }),
+  getAPAging: (asOfDate, vendorFilter) =>
+    apAgingService.calculate({ asOfDate, vendorFilter }),
+};
+
 // Unified Payments
 export const paymentService = {
   getAll: () => springApi.get('/payments'),
@@ -445,9 +596,13 @@ export default {
   incomeStatementService,
   balanceSheetService,
   cashFlowService,
+  financeReportService,
   apAgingService,
   ledgerService,
   reconciliationService,
   financeUserRoleService,
+  automationRuleService,
+  automationLogService,
+  cashIntelligenceService,
   healthService,
 };

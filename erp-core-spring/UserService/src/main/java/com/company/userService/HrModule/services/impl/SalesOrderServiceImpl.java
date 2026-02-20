@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -42,7 +41,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<SalesOrderDTO> getSalesOrderById(Long companyId, Long orderId) {
+    public Optional<SalesOrderDTO> getSalesOrderById(String companyId, Long orderId) {
         return salesOrderRepository.findById(orderId)
             .filter(order -> order.getCompanyId().equals(companyId))
             .map(salesOrderMapper::toDTO);
@@ -50,7 +49,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<SalesOrderDTO> getSalesOrdersByStatus(Long companyId, String status) {
+    public List<SalesOrderDTO> getSalesOrdersByStatus(String companyId, String status) {
         log.info("Fetching sales orders for company: {} with status: {}", companyId, status);
         return salesOrderRepository.findByCompanyAndStatus(companyId, status)
             .stream()
@@ -60,7 +59,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<SalesOrderDTO> getSalesOrdersByCustomer(Long companyId, Long customerId) {
+    public List<SalesOrderDTO> getSalesOrdersByCustomer(String companyId, String customerId) {
         log.info("Fetching sales orders for company: {} and customer: {}", companyId, customerId);
         return salesOrderRepository.findByCompanyAndCustomer(companyId, customerId)
             .stream()
@@ -70,7 +69,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<SalesOrderDTO> getSalesOrdersByDateRange(Long companyId, LocalDate startDate, LocalDate endDate) {
+    public List<SalesOrderDTO> getSalesOrdersByDateRange(String companyId, LocalDateTime startDate, LocalDateTime endDate) {
         return salesOrderRepository.findByDateRange(companyId, startDate, endDate)
             .stream()
             .map(salesOrderMapper::toDTO)
@@ -79,7 +78,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<SalesOrderDTO> getOverdueOrders(Long companyId) {
+    public List<SalesOrderDTO> getOverdueOrders(String companyId) {
         log.info("Fetching overdue orders for company: {}", companyId);
         return salesOrderRepository.findOverdueOrders(companyId)
             .stream()
@@ -89,7 +88,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<SalesOrderDTO> getUnpaidOrders(Long companyId) {
+    public List<SalesOrderDTO> getUnpaidOrders(String companyId) {
         log.info("Fetching unpaid orders for company: {}", companyId);
         return salesOrderRepository.findUnpaidOrders(companyId)
             .stream()
@@ -99,7 +98,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<SalesOrderDTO> getHighValueOrders(Long companyId, BigDecimal minAmount) {
+    public List<SalesOrderDTO> getHighValueOrders(String companyId, BigDecimal minAmount) {
         return salesOrderRepository.findHighValueOrders(companyId, minAmount)
             .stream()
             .map(salesOrderMapper::toDTO)
@@ -107,7 +106,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     }
 
     @Override
-    public SalesOrderDTO updateSalesOrder(Long companyId, Long orderId, SalesOrderDTO salesOrderDTO) {
+    public SalesOrderDTO updateSalesOrder(String companyId, Long orderId, SalesOrderDTO salesOrderDTO) {
         log.info("Updating sales order: {} for company: {}", orderId, companyId);
         SalesOrder order = salesOrderRepository.findById(orderId)
             .filter(o -> o.getCompanyId().equals(companyId))
@@ -120,7 +119,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     }
 
     @Override
-    public SalesOrderDTO confirmOrder(Long companyId, Long orderId) {
+    public SalesOrderDTO confirmOrder(String companyId, Long orderId) {
         log.info("Confirming sales order: {}", orderId);
         SalesOrder order = salesOrderRepository.findById(orderId)
             .filter(o -> o.getCompanyId().equals(companyId))
@@ -133,7 +132,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     }
 
     @Override
-    public SalesOrderDTO shipOrder(Long companyId, Long orderId) {
+    public SalesOrderDTO shipOrder(String companyId, Long orderId) {
         log.info("Shipping sales order: {}", orderId);
         SalesOrder order = salesOrderRepository.findById(orderId)
             .filter(o -> o.getCompanyId().equals(companyId))
@@ -146,7 +145,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     }
 
     @Override
-    public SalesOrderDTO deliverOrder(Long companyId, Long orderId) {
+    public SalesOrderDTO deliverOrder(String companyId, Long orderId) {
         log.info("Delivering sales order: {}", orderId);
         SalesOrder order = salesOrderRepository.findById(orderId)
             .filter(o -> o.getCompanyId().equals(companyId))
@@ -160,7 +159,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     }
 
     @Override
-    public SalesOrderDTO cancelOrder(Long companyId, Long orderId) {
+    public SalesOrderDTO cancelOrder(String companyId, Long orderId) {
         log.info("Cancelling sales order: {}", orderId);
         SalesOrder order = salesOrderRepository.findById(orderId)
             .filter(o -> o.getCompanyId().equals(companyId))
@@ -173,7 +172,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     }
 
     @Override
-    public void deleteSalesOrder(Long companyId, Long orderId) {
+    public void deleteSalesOrder(String companyId, Long orderId) {
         log.info("Deleting sales order: {} for company: {}", orderId, companyId);
         SalesOrder order = salesOrderRepository.findById(orderId)
             .filter(o -> o.getCompanyId().equals(companyId))
@@ -183,26 +182,26 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public BigDecimal calculateCustomerLifetimeValue(Long companyId, Long customerId) {
+    public BigDecimal calculateCustomerLifetimeValue(String companyId, String customerId) {
         log.info("Calculating lifetime value for customer: {}", customerId);
         return salesOrderRepository.calculateCustomerLifetimeValue(companyId, customerId);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public BigDecimal calculateRevenue(Long companyId, LocalDate startDate, LocalDate endDate) {
+    public BigDecimal calculateRevenue(String companyId, LocalDateTime startDate, LocalDateTime endDate) {
         return salesOrderRepository.calculateRevenue(companyId, startDate, endDate);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Long countCustomerOrders(Long companyId, Long customerId) {
+    public Long countCustomerOrders(String companyId, String customerId) {
         return salesOrderRepository.countCustomerOrders(companyId, customerId);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<SalesOrderDTO> getOrdersByOpportunity(Long companyId, Long opportunityId) {
+    public List<SalesOrderDTO> getOrdersByOpportunity(String companyId, Long opportunityId) {
         return salesOrderRepository.findByOpportunity(companyId, opportunityId)
             .stream()
             .map(salesOrderMapper::toDTO)

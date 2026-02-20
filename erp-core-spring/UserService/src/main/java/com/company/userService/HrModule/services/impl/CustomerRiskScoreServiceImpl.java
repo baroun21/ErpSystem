@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -42,14 +41,14 @@ public class CustomerRiskScoreServiceImpl implements CustomerRiskScoreService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<CustomerRiskScoreDTO> getRiskScoreByCustomer(Long companyId, Long customerId) {
+    public Optional<CustomerRiskScoreDTO> getRiskScoreByCustomer(String companyId, String customerId) {
         return Optional.ofNullable(customerRiskScoreRepository.findByCompanyAndCustomer(companyId, customerId))
             .map(customerRiskScoreMapper::toDTO);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<CustomerRiskScoreDTO> getRiskScoreById(Long companyId, Long riskScoreId) {
+    public Optional<CustomerRiskScoreDTO> getRiskScoreById(String companyId, Long riskScoreId) {
         return customerRiskScoreRepository.findById(riskScoreId)
             .filter(rs -> rs.getCompanyId().equals(companyId))
             .map(customerRiskScoreMapper::toDTO);
@@ -57,7 +56,7 @@ public class CustomerRiskScoreServiceImpl implements CustomerRiskScoreService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CustomerRiskScoreDTO> getRiskScoresByLevel(Long companyId, String riskLevel) {
+    public List<CustomerRiskScoreDTO> getRiskScoresByLevel(String companyId, String riskLevel) {
         log.info("Fetching risk scores for company: {} with level: {}", companyId, riskLevel);
         return customerRiskScoreRepository.findByCompanyAndRiskLevel(companyId, riskLevel)
             .stream()
@@ -67,7 +66,7 @@ public class CustomerRiskScoreServiceImpl implements CustomerRiskScoreService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CustomerRiskScoreDTO> getAtRiskCustomers(Long companyId) {
+    public List<CustomerRiskScoreDTO> getAtRiskCustomers(String companyId) {
         log.info("Fetching at-risk customers for company: {}", companyId);
         return customerRiskScoreRepository.findAtRiskCustomers(companyId)
             .stream()
@@ -77,7 +76,7 @@ public class CustomerRiskScoreServiceImpl implements CustomerRiskScoreService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CustomerRiskScoreDTO> getHighDSOCustomers(Long companyId, Integer dsoThreshold) {
+    public List<CustomerRiskScoreDTO> getHighDSOCustomers(String companyId, BigDecimal dsoThreshold) {
         log.info("Fetching customers with high DSO (> {}) for company: {}", dsoThreshold, companyId);
         return customerRiskScoreRepository.findHighDSOCustomers(companyId, dsoThreshold)
             .stream()
@@ -87,7 +86,7 @@ public class CustomerRiskScoreServiceImpl implements CustomerRiskScoreService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CustomerRiskScoreDTO> getLatePayerCustomers(Long companyId) {
+    public List<CustomerRiskScoreDTO> getLatePayerCustomers(String companyId) {
         log.info("Fetching late pay customers for company: {}", companyId);
         return customerRiskScoreRepository.findLatePayerCustomers(companyId)
             .stream()
@@ -97,7 +96,7 @@ public class CustomerRiskScoreServiceImpl implements CustomerRiskScoreService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CustomerRiskScoreDTO> getCustomersWithOverdue(Long companyId) {
+    public List<CustomerRiskScoreDTO> getCustomersWithOverdue(String companyId) {
         log.info("Fetching customers with overdue amounts for company: {}", companyId);
         return customerRiskScoreRepository.findCustomersWithOverdue(companyId)
             .stream()
@@ -107,7 +106,7 @@ public class CustomerRiskScoreServiceImpl implements CustomerRiskScoreService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CustomerRiskScoreDTO> getLowCreditScoreCustomers(Long companyId, Integer minCredit) {
+    public List<CustomerRiskScoreDTO> getLowCreditScoreCustomers(String companyId, Integer minCredit) {
         log.info("Fetching customers with credit score < {} for company: {}", minCredit, companyId);
         return customerRiskScoreRepository.findLowCreditScoreCustomers(companyId, minCredit)
             .stream()
@@ -117,7 +116,7 @@ public class CustomerRiskScoreServiceImpl implements CustomerRiskScoreService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CustomerRiskScoreDTO> getCreditLimitExceeded(Long companyId) {
+    public List<CustomerRiskScoreDTO> getCreditLimitExceeded(String companyId) {
         log.info("Fetching customers exceeding credit limit for company: {}", companyId);
         return customerRiskScoreRepository.findCreditLimitExceeded(companyId)
             .stream()
@@ -127,7 +126,7 @@ public class CustomerRiskScoreServiceImpl implements CustomerRiskScoreService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CustomerRiskScoreDTO> getReviewDueCustomers(Long companyId) {
+    public List<CustomerRiskScoreDTO> getReviewDueCustomers(String companyId) {
         log.info("Fetching customers due for review for company: {}", companyId);
         return customerRiskScoreRepository.findReviewDueCustomers(companyId)
             .stream()
@@ -136,7 +135,7 @@ public class CustomerRiskScoreServiceImpl implements CustomerRiskScoreService {
     }
 
     @Override
-    public CustomerRiskScoreDTO updateRiskScore(Long companyId, Long riskScoreId, CustomerRiskScoreDTO riskScoreDTO) {
+    public CustomerRiskScoreDTO updateRiskScore(String companyId, Long riskScoreId, CustomerRiskScoreDTO riskScoreDTO) {
         log.info("Updating risk score: {} for company: {}", riskScoreId, companyId);
         CustomerRiskScore riskScore = customerRiskScoreRepository.findById(riskScoreId)
             .filter(rs -> rs.getCompanyId().equals(companyId))
@@ -149,7 +148,7 @@ public class CustomerRiskScoreServiceImpl implements CustomerRiskScoreService {
     }
 
     @Override
-    public CustomerRiskScoreDTO calculateAndUpdateRiskScore(Long companyId, Long customerId) {
+    public CustomerRiskScoreDTO calculateAndUpdateRiskScore(String companyId, String customerId) {
         log.info("Calculating and updating risk score for customer: {}", customerId);
         CustomerRiskScore riskScore = customerRiskScoreRepository.findByCompanyAndCustomer(companyId, customerId);
         
@@ -174,7 +173,7 @@ public class CustomerRiskScoreServiceImpl implements CustomerRiskScoreService {
     }
 
     @Override
-    public void deleteRiskScore(Long companyId, Long riskScoreId) {
+    public void deleteRiskScore(String companyId, Long riskScoreId) {
         log.info("Deleting risk score: {} for company: {}", riskScoreId, companyId);
         CustomerRiskScore riskScore = customerRiskScoreRepository.findById(riskScoreId)
             .filter(rs -> rs.getCompanyId().equals(companyId))
@@ -184,14 +183,14 @@ public class CustomerRiskScoreServiceImpl implements CustomerRiskScoreService {
 
     @Override
     @Transactional(readOnly = true)
-    public BigDecimal calculateTotalRiskExposure(Long companyId) {
+    public BigDecimal calculateTotalRiskExposure(String companyId) {
         log.info("Calculating total risk exposure for company: {}", companyId);
         return customerRiskScoreRepository.calculateTotalRiskExposure(companyId);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<CustomerRiskScoreDTO> getRiskScoresByStatus(Long companyId, String status) {
+    public List<CustomerRiskScoreDTO> getRiskScoresByStatus(String companyId, String status) {
         log.info("Fetching risk scores for company: {} with status: {}", companyId, status);
         return customerRiskScoreRepository.findByCompanyAndStatus(companyId, status)
             .stream()

@@ -2,8 +2,10 @@ package com.company.erp.finance.application.service;
 
 import com.company.erp.finance.domain.entity.JournalEntry;
 import com.company.erp.finance.domain.entity.JournalEntryLine;
+import com.company.erp.finance.domain.event.JournalEntryPostedEvent;
 import com.company.erp.finance.domain.repository.JournalEntryLineRepository;
 import com.company.erp.finance.domain.repository.JournalEntryRepository;
+import com.company.erp.shared.infrastructure.event.DomainEventPublisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,7 @@ public class PostingService {
 
     private final JournalEntryRepository journalEntryRepository;
     private final JournalEntryLineRepository journalEntryLineRepository;
+    private final DomainEventPublisher domainEventPublisher;
 
     /**
      * Post a journal entry
@@ -75,6 +78,16 @@ public class PostingService {
         entry.setPostedBy(postedBy);
 
         JournalEntry posted = journalEntryRepository.save(entry);
+        domainEventPublisher.publish(new JournalEntryPostedEvent(
+            posted.getId(),
+            posted.getCompanyId(),
+            posted.getReference(),
+            posted.getDescription(),
+            posted.getTotalDebit(),
+            posted.getTotalCredit(),
+            posted.getPostedBy(),
+            posted.getPostedDate() == null ? null : posted.getPostedDate().atStartOfDay()
+        ));
         log.info("Journal entry posted: {} for company: {}", journalEntryId, companyId);
         return posted;
     }

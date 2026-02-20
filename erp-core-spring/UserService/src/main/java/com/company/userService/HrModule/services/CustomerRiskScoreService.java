@@ -7,19 +7,19 @@ import java.util.Optional;
 
 public interface CustomerRiskScoreService {
     CustomerRiskScoreDTO createRiskScore(CustomerRiskScoreDTO riskScoreDTO);
-    Optional<CustomerRiskScoreDTO> getRiskScoreByCustomer(Long companyId, Long customerId);
-    Optional<CustomerRiskScoreDTO> getRiskScoreById(Long companyId, Long riskScoreId);
-    List<CustomerRiskScoreDTO> getRiskScoresByLevel(Long companyId, String riskLevel);
-    List<CustomerRiskScoreDTO> getAtRiskCustomers(Long companyId);
-    List<CustomerRiskScoreDTO> getHighDSOCustomers(Long companyId, Integer dsoThreshold);
-    List<CustomerRiskScoreDTO> getLatePayerCustomers(Long companyId);
-    List<CustomerRiskScoreDTO> getCustomersWithOverdue(Long companyId);
-    List<CustomerRiskScoreDTO> getLowCreditScoreCustomers(Long companyId, Integer minCredit);
-    List<CustomerRiskScoreDTO> getCreditLimitExceeded(Long companyId);
-    List<CustomerRiskScoreDTO> getReviewDueCustomers(Long companyId);
-    CustomerRiskScoreDTO updateRiskScore(Long companyId, Long riskScoreId, CustomerRiskScoreDTO riskScoreDTO);
-    CustomerRiskScoreDTO calculateAndUpdateRiskScore(Long companyId, Long customerId);
-    void deleteRiskScore(Long companyId, Long riskScoreId);
-    BigDecimal calculateTotalRiskExposure(Long companyId);
-    List<CustomerRiskScoreDTO> getRiskScoresByStatus(Long companyId, String status);
+    Optional<CustomerRiskScoreDTO> getRiskScoreByCustomer(String companyId, String customerId);
+    Optional<CustomerRiskScoreDTO> getRiskScoreById(String companyId, Long riskScoreId);
+    List<CustomerRiskScoreDTO> getRiskScoresByLevel(String companyId, String riskLevel);
+    List<CustomerRiskScoreDTO> getAtRiskCustomers(String companyId);
+    List<CustomerRiskScoreDTO> getHighDSOCustomers(String companyId, BigDecimal dsoThreshold);
+    List<CustomerRiskScoreDTO> getLatePayerCustomers(String companyId);
+    List<CustomerRiskScoreDTO> getCustomersWithOverdue(String companyId);
+    List<CustomerRiskScoreDTO> getLowCreditScoreCustomers(String companyId, Integer minCredit);
+    List<CustomerRiskScoreDTO> getCreditLimitExceeded(String companyId);
+    List<CustomerRiskScoreDTO> getReviewDueCustomers(String companyId);
+    CustomerRiskScoreDTO updateRiskScore(String companyId, Long riskScoreId, CustomerRiskScoreDTO riskScoreDTO);
+    CustomerRiskScoreDTO calculateAndUpdateRiskScore(String companyId, String customerId);
+    void deleteRiskScore(String companyId, Long riskScoreId);
+    BigDecimal calculateTotalRiskExposure(String companyId);
+    List<CustomerRiskScoreDTO> getRiskScoresByStatus(String companyId, String status);
 }

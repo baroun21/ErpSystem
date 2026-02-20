@@ -13,23 +13,23 @@ import java.util.List;
 public interface LeadRepository extends JpaRepository<Lead, Long> {
 
     @Query("SELECT l FROM Lead l WHERE l.companyId = :companyId AND l.status = :status ORDER BY l.createdAt DESC")
-    List<Lead> findByCompanyAndStatus(@Param("companyId") Long companyId, @Param("status") String status);
+    List<Lead> findByCompanyAndStatus(@Param("companyId") String companyId, @Param("status") String status);
 
     @Query("SELECT l FROM Lead l WHERE l.companyId = :companyId AND l.source = :source ORDER BY l.estimatedValue DESC")
-    List<Lead> findByCompanyAndSource(@Param("companyId") Long companyId, @Param("source") String source);
+    List<Lead> findByCompanyAndSource(@Param("companyId") String companyId, @Param("source") String source);
 
     @Query("SELECT l FROM Lead l WHERE l.companyId = :companyId AND l.assignedTo = :assignedTo ORDER BY l.createdAt DESC")
-    List<Lead> findByCompanyAndAssignedTo(@Param("companyId") Long companyId, @Param("assignedTo") Long assignedTo);
+    List<Lead> findByCompanyAndAssignedTo(@Param("companyId") String companyId, @Param("assignedTo") String assignedTo);
 
     @Query("SELECT l FROM Lead l WHERE l.companyId = :companyId AND l.createdAt BETWEEN :startDate AND :endDate ORDER BY l.createdAt DESC")
-    List<Lead> findByCompanyAndDateRange(@Param("companyId") Long companyId, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+    List<Lead> findByCompanyAndDateRange(@Param("companyId") String companyId, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
     @Query("SELECT l FROM Lead l WHERE l.companyId = :companyId AND l.estimatedValue >= :minValue ORDER BY l.estimatedValue DESC")
-    List<Lead> findHighValueLeads(@Param("companyId") Long companyId, @Param("minValue") java.math.BigDecimal minValue);
+    List<Lead> findHighValueLeads(@Param("companyId") String companyId, @Param("minValue") java.math.BigDecimal minValue);
 
     @Query("SELECT l FROM Lead l WHERE l.companyId = :companyId AND l.email LIKE CONCAT('%', :email, '%')")
-    List<Lead> findByEmailContaining(@Param("companyId") Long companyId, @Param("email") String email);
+    List<Lead> findByEmailContaining(@Param("companyId") String companyId, @Param("email") String email);
 
     @Query("SELECT COUNT(l) FROM Lead l WHERE l.companyId = :companyId AND l.status = :status")
-    Long countByStatus(@Param("companyId") Long companyId, @Param("status") String status);
+    Long countByStatus(@Param("companyId") String companyId, @Param("status") String status);
 }

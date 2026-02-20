@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -27,51 +27,51 @@ public class OpportunityController {
     }
 
     @GetMapping("/{companyId}/{opportunityId}")
-    public ResponseEntity<OpportunityDTO> getOpportunity(@PathVariable Long companyId, @PathVariable Long opportunityId) {
+    public ResponseEntity<OpportunityDTO> getOpportunity(@PathVariable String companyId, @PathVariable Long opportunityId) {
         return opportunityService.getOpportunityById(companyId, opportunityId)
             .map(ResponseEntity::ok)
             .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/company/{companyId}/status/{status}")
-    public ResponseEntity<List<OpportunityDTO>> getOpportunitiesByStatus(@PathVariable Long companyId, @PathVariable String status) {
+    public ResponseEntity<List<OpportunityDTO>> getOpportunitiesByStatus(@PathVariable String companyId, @PathVariable String status) {
         log.info("GET /api/sales/opportunities/company/{}/status/{}", companyId, status);
         return ResponseEntity.ok(opportunityService.getOpportunitiesByStatus(companyId, status));
     }
 
     @GetMapping("/company/{companyId}/stage/{stageId}")
-    public ResponseEntity<List<OpportunityDTO>> getOpportunitiesByStage(@PathVariable Long companyId, @PathVariable Long stageId) {
+    public ResponseEntity<List<OpportunityDTO>> getOpportunitiesByStage(@PathVariable String companyId, @PathVariable Long stageId) {
         return ResponseEntity.ok(opportunityService.getOpportunitiesByStage(companyId, stageId));
     }
 
     @GetMapping("/company/{companyId}/lead/{leadId}")
-    public ResponseEntity<List<OpportunityDTO>> getOpportunitiesByLead(@PathVariable Long companyId, @PathVariable Long leadId) {
+    public ResponseEntity<List<OpportunityDTO>> getOpportunitiesByLead(@PathVariable String companyId, @PathVariable Long leadId) {
         return ResponseEntity.ok(opportunityService.getOpportunitiesByLead(companyId, leadId));
     }
 
     @GetMapping("/company/{companyId}/close-date-range")
     public ResponseEntity<List<OpportunityDTO>> getByCloseDateRange(
-        @PathVariable Long companyId,
-        @RequestParam LocalDate startDate,
-        @RequestParam LocalDate endDate) {
+        @PathVariable String companyId,
+        @RequestParam LocalDateTime startDate,
+        @RequestParam LocalDateTime endDate) {
         return ResponseEntity.ok(opportunityService.getOpportunitiesByCloseDateRange(companyId, startDate, endDate));
     }
 
     @GetMapping("/company/{companyId}/high-probability")
     public ResponseEntity<List<OpportunityDTO>> getHighProbability(
-        @PathVariable Long companyId,
+        @PathVariable String companyId,
         @RequestParam Integer minProbability) {
         return ResponseEntity.ok(opportunityService.getHighProbabilityOpportunities(companyId, minProbability));
     }
 
     @GetMapping("/company/{companyId}/forecast")
-    public ResponseEntity<List<OpportunityDTO>> getForecastingOpportunities(@PathVariable Long companyId) {
+    public ResponseEntity<List<OpportunityDTO>> getForecastingOpportunities(@PathVariable String companyId) {
         return ResponseEntity.ok(opportunityService.getForecastingOpportunities(companyId));
     }
 
     @PutMapping("/{companyId}/{opportunityId}")
     public ResponseEntity<OpportunityDTO> updateOpportunity(
-        @PathVariable Long companyId,
+        @PathVariable String companyId,
         @PathVariable Long opportunityId,
         @RequestBody OpportunityDTO opportunityDTO) {
         log.info("PUT /api/sales/opportunities/{}/{}", companyId, opportunityId);
@@ -79,32 +79,32 @@ public class OpportunityController {
     }
 
     @PutMapping("/{companyId}/{opportunityId}/win")
-    public ResponseEntity<OpportunityDTO> winOpportunity(@PathVariable Long companyId, @PathVariable Long opportunityId) {
+    public ResponseEntity<OpportunityDTO> winOpportunity(@PathVariable String companyId, @PathVariable Long opportunityId) {
         log.info("PUT /api/sales/opportunities/{}/{}/win", companyId, opportunityId);
         return ResponseEntity.ok(opportunityService.winOpportunity(companyId, opportunityId));
     }
 
     @PutMapping("/{companyId}/{opportunityId}/lose")
-    public ResponseEntity<OpportunityDTO> loseOpportunity(@PathVariable Long companyId, @PathVariable Long opportunityId) {
+    public ResponseEntity<OpportunityDTO> loseOpportunity(@PathVariable String companyId, @PathVariable Long opportunityId) {
         log.info("PUT /api/sales/opportunities/{}/{}/lose", companyId, opportunityId);
         return ResponseEntity.ok(opportunityService.loseOpportunity(companyId, opportunityId));
     }
 
     @DeleteMapping("/{companyId}/{opportunityId}")
-    public ResponseEntity<Void> deleteOpportunity(@PathVariable Long companyId, @PathVariable Long opportunityId) {
+    public ResponseEntity<Void> deleteOpportunity(@PathVariable String companyId, @PathVariable Long opportunityId) {
         log.info("DELETE /api/sales/opportunities/{}/{}", companyId, opportunityId);
         opportunityService.deleteOpportunity(companyId, opportunityId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/company/{companyId}/revenue-forecast")
-    public ResponseEntity<BigDecimal> calculateRevenueForecast(@PathVariable Long companyId) {
+    public ResponseEntity<BigDecimal> calculateRevenueForecast(@PathVariable String companyId) {
         log.info("GET /api/sales/opportunities/company/{}/revenue-forecast", companyId);
         return ResponseEntity.ok(opportunityService.calculateRevenueForecast(companyId));
     }
 
     @GetMapping("/company/{companyId}/count-open")
-    public ResponseEntity<Long> countOpenOpportunities(@PathVariable Long companyId) {
+    public ResponseEntity<Long> countOpenOpportunities(@PathVariable String companyId) {
         return ResponseEntity.ok(opportunityService.countOpenOpportunities(companyId));
     }
 }

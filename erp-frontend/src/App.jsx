@@ -37,8 +37,21 @@ import TrialBalance from './pages/finance/TrialBalance'
 import IncomeStatement from './pages/finance/IncomeStatement'
 import BalanceSheet from './pages/finance/BalanceSheet'
 import CashFlow from './pages/finance/CashFlow'
+import CashIntelligence from './pages/finance/CashIntelligence'
 import APAging from './pages/finance/APAging'
 import FinanceUserRoles from './pages/finance/FinanceUserRoles'
+import CommandCenter from './pages/finance/CommandCenter'
+import SalesLayout from './pages/sales/SalesLayout'
+import SalesDashboard from './pages/sales/SalesDashboard'
+import SalesLeads from './pages/sales/Leads'
+import SalesOpportunities from './pages/sales/Opportunities'
+import SalesQuotations from './pages/sales/Quotations'
+import SalesOrders from './pages/sales/SalesOrders'
+import SalesRiskScores from './pages/sales/CustomerRiskScores'
+import SalesAnalytics from './pages/sales/SalesAnalytics'
+import AutomationLayout from './pages/automation/AutomationLayout'
+import AutomationRules from './pages/automation/AutomationRules'
+import AutomationLogs from './pages/automation/AutomationLogs'
 import './App.css'
 
 function App() {
@@ -63,6 +76,15 @@ function App() {
               <Link to="/finance" className="nav-link">
                 Finance
               </Link>
+              <Link to="/command-center" className="nav-link">
+                Command Center
+              </Link>
+              <Link to="/sales" className="nav-link">
+                Sales
+              </Link>
+              <Link to="/automation" className="nav-link">
+                Automation
+              </Link>
             </div>
             <div className="user-pill">
               <span className="user-dot" />
@@ -74,7 +96,7 @@ function App() {
         {/* Page Content */}
         <main className="page-frame">
           <Routes>
-            <Route path="/" element={<Dashboard />} />
+            <Route path="/" element={<CommandCenter />} />
             <Route path="/hr" element={<HRLayout />}>
               <Route index element={<HRDashboard />} />
               <Route path="employees" element={<Employees />} />
@@ -113,7 +135,21 @@ function App() {
               <Route path="income-statement" element={<IncomeStatement />} />
               <Route path="balance-sheet" element={<BalanceSheet />} />
               <Route path="cash-flow" element={<CashFlow />} />
+              <Route path="cash-intelligence" element={<CashIntelligence />} />
               <Route path="user-roles" element={<FinanceUserRoles />} />
+            </Route>
+            <Route path="/sales" element={<SalesLayout />}>
+              <Route index element={<SalesDashboard />} />
+              <Route path="leads" element={<SalesLeads />} />
+              <Route path="opportunities" element={<SalesOpportunities />} />
+              <Route path="quotations" element={<SalesQuotations />} />
+              <Route path="orders" element={<SalesOrders />} />
+              <Route path="risk-scores" element={<SalesRiskScores />} />
+              <Route path="analytics" element={<SalesAnalytics />} />
+            </Route>
+            <Route path="/automation" element={<AutomationLayout />}>
+              <Route index element={<AutomationRules />} />
+              <Route path="logs" element={<AutomationLogs />} />
             </Route>
           </Routes>
         </main>

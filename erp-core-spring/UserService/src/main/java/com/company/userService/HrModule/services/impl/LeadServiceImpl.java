@@ -34,7 +34,7 @@ public class LeadServiceImpl implements LeadService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<LeadDTO> getLeadById(Long companyId, Long leadId) {
+    public Optional<LeadDTO> getLeadById(String companyId, Long leadId) {
         return leadRepository.findById(leadId)
             .filter(lead -> lead.getCompanyId().equals(companyId))
             .map(leadMapper::toDTO);
@@ -42,7 +42,7 @@ public class LeadServiceImpl implements LeadService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<LeadDTO> getLeadsByCompanyAndStatus(Long companyId, String status) {
+    public List<LeadDTO> getLeadsByStatus(String companyId, String status) {
         log.info("Fetching leads for company: {} with status: {}", companyId, status);
         return leadRepository.findByCompanyAndStatus(companyId, status)
             .stream()
@@ -52,7 +52,7 @@ public class LeadServiceImpl implements LeadService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<LeadDTO> getLeadsBySource(Long companyId, String source) {
+    public List<LeadDTO> getLeadsBySource(String companyId, String source) {
         log.info("Fetching leads for company: {} from source: {}", companyId, source);
         return leadRepository.findByCompanyAndSource(companyId, source)
             .stream()
@@ -62,9 +62,9 @@ public class LeadServiceImpl implements LeadService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<LeadDTO> getAssignedLeads(Long companyId, Long salesRepId) {
-        log.info("Fetching assigned leads for sales rep: {}", salesRepId);
-        return leadRepository.findByCompanyAndAssignedTo(companyId, salesRepId)
+    public List<LeadDTO> getLeadsByAssignedTo(String companyId, String assignedTo) {
+        log.info("Fetching assigned leads for sales rep: {}", assignedTo);
+        return leadRepository.findByCompanyAndAssignedTo(companyId, assignedTo)
             .stream()
             .map(leadMapper::toDTO)
             .toList();
@@ -72,7 +72,7 @@ public class LeadServiceImpl implements LeadService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<LeadDTO> getHighValueLeads(Long companyId, java.math.BigDecimal minValue) {
+    public List<LeadDTO> getHighValueLeads(String companyId, java.math.BigDecimal minValue) {
         log.info("Fetching high value leads for company: {} with min value: {}", companyId, minValue);
         return leadRepository.findHighValueLeads(companyId, minValue)
             .stream()
@@ -82,7 +82,7 @@ public class LeadServiceImpl implements LeadService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<LeadDTO> getLeadsByDateRange(Long companyId, LocalDateTime startDate, LocalDateTime endDate) {
+    public List<LeadDTO> getLeadsByDateRange(String companyId, LocalDateTime startDate, LocalDateTime endDate) {
         log.info("Fetching leads for company: {} between {} and {}", companyId, startDate, endDate);
         return leadRepository.findByCompanyAndDateRange(companyId, startDate, endDate)
             .stream()
@@ -91,7 +91,7 @@ public class LeadServiceImpl implements LeadService {
     }
 
     @Override
-    public LeadDTO updateLead(Long companyId, Long leadId, LeadDTO leadDTO) {
+    public LeadDTO updateLead(String companyId, Long leadId, LeadDTO leadDTO) {
         log.info("Updating lead: {} for company: {}", leadId, companyId);
         Lead lead = leadRepository.findById(leadId)
             .filter(l -> l.getCompanyId().equals(companyId))
@@ -104,7 +104,7 @@ public class LeadServiceImpl implements LeadService {
     }
 
     @Override
-    public void deleteLead(Long companyId, Long leadId) {
+    public void deleteLead(String companyId, Long leadId) {
         log.info("Deleting lead: {} for company: {}", leadId, companyId);
         Lead lead = leadRepository.findById(leadId)
             .filter(l -> l.getCompanyId().equals(companyId))
@@ -114,13 +114,13 @@ public class LeadServiceImpl implements LeadService {
 
     @Override
     @Transactional(readOnly = true)
-    public Long countLeadsByStatus(Long companyId, String status) {
+    public Long countLeadsByStatus(String companyId, String status) {
         return leadRepository.countByStatus(companyId, status);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<LeadDTO> searchLeadsByEmail(Long companyId, String email) {
+    public List<LeadDTO> searchLeadsByEmail(String companyId, String email) {
         return leadRepository.findByEmailContaining(companyId, email)
             .stream()
             .map(leadMapper::toDTO)
