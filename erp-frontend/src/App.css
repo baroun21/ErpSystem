@@ -1,6 +1,46 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap');
 
 :root {
+	/* NEXORA Design System - Color Tokens */
+	/* Primary Brand Color */
+	--color-primary-teal-50: #f0fdf4;
+	--color-primary-teal-100: #dcfce7;
+	--color-primary-teal-200: #bbf7d0;
+	--color-primary-teal-300: #86efac;
+	--color-primary-teal-400: #4ade80;
+	--color-primary-teal-500: #22c55e;
+	--color-primary-teal-600: #16a34a;
+	--color-primary-teal-700: #15803d;
+
+	/* Secondary Brand Color */
+	--color-secondary-blue-50: #eff6ff;
+	--color-secondary-blue-100: #dbeafe;
+	--color-secondary-blue-200: #bfdbfe;
+	--color-secondary-blue-300: #93c5fd;
+	--color-secondary-blue-400: #60a5fa;
+	--color-secondary-blue-500: #3b82f6;
+	--color-secondary-blue-600: #2563eb;
+	--color-secondary-blue-700: #1d4ed8;
+
+	/* Status Colors */
+	--color-status-green: #10b981;   /* Safe/Success */
+	--color-status-yellow: #f59e0b;  /* Warning */
+	--color-status-red: #ef4444;     /* Risk/Error */
+	--color-status-blue: #0ea5e9;    /* Info */
+
+	/* Neutral Grays */
+	--color-gray-50: #f9fafb;
+	--color-gray-100: #f3f4f6;
+	--color-gray-200: #e5e7eb;
+	--color-gray-300: #d1d5db;
+	--color-gray-400: #9ca3af;
+	--color-gray-500: #6b7280;
+	--color-gray-600: #4b5563;
+	--color-gray-700: #374151;
+	--color-gray-800: #1f2937;
+	--color-gray-900: #111827;
+
+	/* Legacy tokens (keeping for compatibility) */
 	--ink-900: #131319;
 	--ink-700: #262633;
 	--ink-500: #4a4a63;
@@ -21,20 +61,31 @@ body {
 	margin: 0;
 	font-family: 'Space Grotesk', sans-serif;
 	color: var(--ink-900);
-	background: radial-gradient(circle at top, #f6f4ff 0%, #f9fafc 35%, #f3f6ff 100%);
+	background: #ffffff;
 	min-height: 100vh;
+	width: 100%;
 }
 
 .app-shell {
 	min-height: 100vh;
+	background-image: none;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+.app-shell.has-sidebar {
+	padding-bottom: 32px;
 	background-image:
 		radial-gradient(circle at 15% 20%, rgba(255, 95, 143, 0.18), transparent 55%),
 		radial-gradient(circle at 85% 15%, rgba(92, 124, 250, 0.2), transparent 50%),
 		radial-gradient(circle at 50% 90%, rgba(32, 201, 151, 0.12), transparent 60%);
-	padding-bottom: 56px;
 }
 
 .topbar {
+	height: 60px;
+	display: flex;
+	align-items: center;
 	position: sticky;
 	top: 0;
 	z-index: 20;
@@ -44,13 +95,15 @@ body {
 }
 
 .topbar-inner {
-	max-width: 1120px;
-	margin: 0 auto;
-	padding: 18px 24px;
+	max-width: 100%;
+	width: 100%;
+	margin: 0;
+	padding: 0 24px;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	gap: 24px;
+	height: 100%;
 }
 
 .brand {
@@ -103,6 +156,21 @@ body {
 	color: var(--ink-700);
 }
 
+.user-profile-link {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	text-decoration: none;
+	color: var(--ink-700);
+	transition: transform 0.2s ease, color 0.2s ease;
+	cursor: pointer;
+}
+
+.user-profile-link:hover {
+	transform: translateY(-1px);
+	color: var(--ink-900);
+}
+
 .user-dot {
 	width: 8px;
 	height: 8px;
@@ -112,21 +180,49 @@ body {
 }
 
 .page-frame {
-	max-width: 1120px;
-	margin: 0 auto;
-	padding: 32px 24px;
+	width: 100%;
+	padding: 40px 24px;
+	min-height: calc(100vh - 60px);
+}
+
+main {
+	padding: 0;
+	min-height: 100vh;
+	width: 100%;
+}
+
+/* Ensure public pages (no navbar) take full width */
+main:not(.page-frame) {
+	padding-top: 0;
+	min-height: 100vh;
 }
 
 .finance-layout {
 	display: flex;
 	gap: 16px;
-	min-height: calc(100vh - 70px);
+	min-height: calc(100vh - 60px);
 	margin-left: 260px;
 	transition: margin-left 0.25s ease;
 }
 
 .finance-layout.sidebar-collapsed {
 	margin-left: 60px;
+}
+
+/* Responsive: Hide sidebar on mobile */
+@media (max-width: 768px) {
+	.finance-layout {
+		margin-left: 0;
+	}
+	
+	.finance-sidebar {
+		transform: translateX(-100%);
+		position: fixed;
+	}
+	
+	.finance-sidebar.open {
+		transform: translateX(0);
+	}
 }
 
 .finance-sidebar {
@@ -283,6 +379,9 @@ body {
 .finance-content {
 	flex: 1;
 	min-width: 0;
+	padding: 24px 32px;
+	overflow-y: auto;
+	max-height: calc(100vh - 60px);
 }
 
 .finance-page {

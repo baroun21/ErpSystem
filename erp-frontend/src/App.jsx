@@ -1,6 +1,11 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom'
 import { useState, useEffect } from 'react'
+import Landing from './pages/Landing'
 import Dashboard from './pages/Dashboard'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import Subscription from './pages/Subscription'
+import Profile from './pages/Profile'
 import FinanceLayout from './pages/finance/FinanceLayout'
 import FinanceDashboard from './pages/finance/FinanceDashboard'
 import HRLayout from './pages/hr/HRLayout'
@@ -54,21 +59,36 @@ import AutomationRules from './pages/automation/AutomationRules'
 import AutomationLogs from './pages/automation/AutomationLogs'
 import './App.css'
 
-function App() {
+function AppContent() {
   const [user, setUser] = useState(null)
+  const location = useLocation()
+  
+  // Determine if we should show navbar
+  const authPages = ['/', '/login', '/register', '/subscription', '/forgot-password']
+  const isLandingPage = location.pathname === '/'
+  const showNavbar = !authPages.includes(location.pathname)
+
+  // Landing page - render independently without app-shell
+  if (isLandingPage) {
+    return (
+      <Routes>
+        <Route path="/" element={<Landing />} />
+      </Routes>
+    )
+  }
 
   return (
-    <BrowserRouter>
-      <div className="app-shell">
-        {/* Navigation */}
+    <div className={`app-shell ${showNavbar ? 'has-sidebar' : ''}`}>
+      {/* Navigation - Only show on app pages */}
+      {showNavbar && (
         <nav className="topbar">
           <div className="topbar-inner">
             <div className="brand">
               <h1 className="brand-title">NEXORA</h1>
             </div>
             <div className="nav-links">
-              <Link to="/" className="nav-link">
-                Home
+              <Link to="/dashboard" className="nav-link">
+                Dashboard
               </Link>
               <Link to="/hr" className="nav-link">
                 HR
@@ -87,73 +107,91 @@ function App() {
               </Link>
             </div>
             <div className="user-pill">
-              <span className="user-dot" />
-              {user ? user : 'Guest User'}
+              <Link to="/profile" className="user-profile-link">
+                <span className="user-dot" />
+                {user ? user : 'Guest User'}
+              </Link>
             </div>
           </div>
         </nav>
+      )}
 
-        {/* Page Content */}
-        <main className="page-frame">
-          <Routes>
-            <Route path="/" element={<CommandCenter />} />
-            <Route path="/hr" element={<HRLayout />}>
-              <Route index element={<HRDashboard />} />
-              <Route path="employees" element={<Employees />} />
-              <Route path="departments" element={<Departments />} />
-              <Route path="positions" element={<Positions />} />
-              <Route path="locations" element={<Locations />} />
-              <Route path="attendance" element={<Attendance />} />
-              <Route path="leaves" element={<Leaves />} />
-              <Route path="holidays" element={<Holidays />} />
-              <Route path="salary" element={<Salary />} />
-              <Route path="payroll" element={<Payroll />} />
-              <Route path="deductions" element={<Deductions />} />
-              <Route path="reviews" element={<Reviews />} />
-              <Route path="goals" element={<Goals />} />
-              <Route path="user-roles" element={<HRUserRoles />} />
-            </Route>
-            <Route path="/finance" element={<FinanceLayout />}>
-              <Route index element={<FinanceDashboard />} />
-              <Route path="companies" element={<Companies />} />
-              <Route path="chart-of-accounts" element={<ChartOfAccounts />} />
-              <Route path="cost-centers" element={<CostCenters />} />
-              <Route path="journal-entries" element={<JournalEntries />} />
-              <Route path="journal-entry-lines" element={<JournalEntryLines />} />
-              <Route path="customers" element={<Customers />} />
-              <Route path="invoices" element={<FinanceInvoiceList />} />
-              <Route path="customer-payments" element={<CustomerPayments />} />
-              <Route path="ar-aging" element={<ARAging />} />
-              <Route path="suppliers" element={<Suppliers />} />
-              <Route path="bills" element={<Bills />} />
-              <Route path="bill-lines" element={<BillLines />} />
-              <Route path="supplier-payments" element={<SupplierPayments />} />
-              <Route path="ap-aging" element={<APAging />} />
-              <Route path="bank-accounts" element={<BankAccounts />} />
-              <Route path="bank-transactions" element={<BankTransactions />} />
-              <Route path="trial-balance" element={<TrialBalance />} />
-              <Route path="income-statement" element={<IncomeStatement />} />
-              <Route path="balance-sheet" element={<BalanceSheet />} />
-              <Route path="cash-flow" element={<CashFlow />} />
-              <Route path="cash-intelligence" element={<CashIntelligence />} />
-              <Route path="user-roles" element={<FinanceUserRoles />} />
-            </Route>
-            <Route path="/sales" element={<SalesLayout />}>
-              <Route index element={<SalesDashboard />} />
-              <Route path="leads" element={<SalesLeads />} />
-              <Route path="opportunities" element={<SalesOpportunities />} />
-              <Route path="quotations" element={<SalesQuotations />} />
-              <Route path="orders" element={<SalesOrders />} />
-              <Route path="risk-scores" element={<SalesRiskScores />} />
-              <Route path="analytics" element={<SalesAnalytics />} />
-            </Route>
-            <Route path="/automation" element={<AutomationLayout />}>
-              <Route index element={<AutomationRules />} />
-              <Route path="logs" element={<AutomationLogs />} />
-            </Route>
-          </Routes>
-        </main>
-      </div>
+      {/* Page Content */}
+      <main className={showNavbar ? 'page-frame' : ''}>
+        <Routes>
+          {/* Public Pages */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/subscription" element={<Subscription />} />
+
+          {/* App Pages */}
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/command-center" element={<CommandCenter />} />
+          <Route path="/hr" element={<HRLayout />}>
+            <Route index element={<HRDashboard />} />
+            <Route path="employees" element={<Employees />} />
+            <Route path="departments" element={<Departments />} />
+            <Route path="positions" element={<Positions />} />
+            <Route path="locations" element={<Locations />} />
+            <Route path="attendance" element={<Attendance />} />
+            <Route path="leaves" element={<Leaves />} />
+            <Route path="holidays" element={<Holidays />} />
+            <Route path="salary" element={<Salary />} />
+            <Route path="payroll" element={<Payroll />} />
+            <Route path="deductions" element={<Deductions />} />
+            <Route path="reviews" element={<Reviews />} />
+            <Route path="goals" element={<Goals />} />
+            <Route path="user-roles" element={<HRUserRoles />} />
+          </Route>
+          <Route path="/finance" element={<FinanceLayout />}>
+            <Route index element={<FinanceDashboard />} />
+            <Route path="companies" element={<Companies />} />
+            <Route path="chart-of-accounts" element={<ChartOfAccounts />} />
+            <Route path="cost-centers" element={<CostCenters />} />
+            <Route path="journal-entries" element={<JournalEntries />} />
+            <Route path="journal-entry-lines" element={<JournalEntryLines />} />
+            <Route path="customers" element={<Customers />} />
+            <Route path="invoices" element={<FinanceInvoiceList />} />
+            <Route path="customer-payments" element={<CustomerPayments />} />
+            <Route path="ar-aging" element={<ARAging />} />
+            <Route path="suppliers" element={<Suppliers />} />
+            <Route path="bills" element={<Bills />} />
+            <Route path="bill-lines" element={<BillLines />} />
+            <Route path="supplier-payments" element={<SupplierPayments />} />
+            <Route path="ap-aging" element={<APAging />} />
+            <Route path="bank-accounts" element={<BankAccounts />} />
+            <Route path="bank-transactions" element={<BankTransactions />} />
+            <Route path="trial-balance" element={<TrialBalance />} />
+            <Route path="income-statement" element={<IncomeStatement />} />
+            <Route path="balance-sheet" element={<BalanceSheet />} />
+            <Route path="cash-flow" element={<CashFlow />} />
+            <Route path="cash-intelligence" element={<CashIntelligence />} />
+            <Route path="user-roles" element={<FinanceUserRoles />} />
+          </Route>
+          <Route path="/sales" element={<SalesLayout />}>
+            <Route index element={<SalesDashboard />} />
+            <Route path="leads" element={<SalesLeads />} />
+            <Route path="opportunities" element={<SalesOpportunities />} />
+            <Route path="quotations" element={<SalesQuotations />} />
+            <Route path="orders" element={<SalesOrders />} />
+            <Route path="risk-scores" element={<SalesRiskScores />} />
+            <Route path="analytics" element={<SalesAnalytics />} />
+          </Route>
+          <Route path="/automation" element={<AutomationLayout />}>
+            <Route index element={<AutomationRules />} />
+            <Route path="logs" element={<AutomationLogs />} />
+          </Route>
+        </Routes>
+      </main>
+    </div>
+  )
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   )
 }
