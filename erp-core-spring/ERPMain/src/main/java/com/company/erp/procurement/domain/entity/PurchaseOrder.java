@@ -55,3 +55,4 @@ public class PurchaseOrder extends BaseEntity {
     @Column(name = "notes", columnDefinition = "text")
     private String notes;
 }
+

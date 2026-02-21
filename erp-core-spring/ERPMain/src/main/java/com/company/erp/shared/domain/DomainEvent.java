@@ -72,3 +72,4 @@ public abstract class DomainEvent extends ApplicationEvent {
         this.occurredAt = LocalDateTime.now();
     }
 }
+

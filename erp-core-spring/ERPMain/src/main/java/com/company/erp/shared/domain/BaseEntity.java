@@ -67,3 +67,4 @@ public abstract class BaseEntity {
     @Column(name = "updated_by")
     private String updatedBy;
 }
+

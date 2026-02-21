@@ -50,3 +50,4 @@ public class Attendance extends BaseEntity {
         return "Absent".equalsIgnoreCase(status);
     }
 }
+

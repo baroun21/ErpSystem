@@ -15,6 +15,11 @@ import java.util.List;
 public class SupplierController {
     private final SupplierService supplierService;
 
+    @GetMapping
+    public ResponseEntity<List<SupplierResponse>> getAllSuppliers() {
+        return ResponseEntity.ok(supplierService.getAllSuppliers());
+    }
+
     @PostMapping
     public ResponseEntity<SupplierResponse> createSupplier(@RequestBody SupplierCreateRequest request) {
         return ResponseEntity.ok(supplierService.createSupplier(request));

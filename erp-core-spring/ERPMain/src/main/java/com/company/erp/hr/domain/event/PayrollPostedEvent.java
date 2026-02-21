@@ -31,3 +31,4 @@ public class PayrollPostedEvent extends DomainEvent {
         this.paymentDate = paymentDate;
     }
 }
+

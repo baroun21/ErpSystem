@@ -44,3 +44,4 @@ public class LeaveRequestSubmittedEvent extends DomainEvent {
         return java.time.temporal.ChronoUnit.DAYS.between(fromDate, toDate) + 1;
     }
 }
+

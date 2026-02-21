@@ -70,3 +70,4 @@ public class AutomationConditionEvaluator {
         return value.trim().toLowerCase(Locale.ROOT);
     }
 }
+

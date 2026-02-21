@@ -67,3 +67,4 @@ public interface LeaveRequestRepository extends JpaRepository<LeaveRequest, Long
         @Param("year") Integer year
     );
 }
+

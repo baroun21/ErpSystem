@@ -58,6 +58,15 @@ public class JournalEntry {
     @Column(name = "posted_date")
     private LocalDate postedDate;
 
+    @Column(name = "posted_by")
+    private String postedBy;
+
+    @Column(name = "is_balanced")
+    private Boolean isBalanced = false;
+
+    @Column(name = "reversal_of_id")
+    private Long reversalOfId;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

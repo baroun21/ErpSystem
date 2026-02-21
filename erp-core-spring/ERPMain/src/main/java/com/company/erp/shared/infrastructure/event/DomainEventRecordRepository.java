@@ -10,3 +10,4 @@ public interface DomainEventRecordRepository extends JpaRepository<DomainEventRe
 
     List<DomainEventRecord> findByCompanyIdOrderByOccurredAtDesc(Long companyId);
 }
+

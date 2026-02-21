@@ -44,3 +44,4 @@ public class Vendor extends BaseEntity {
     @Column(name = "status", length = 50)
     private String status;
 }
+

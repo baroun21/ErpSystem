@@ -16,6 +16,11 @@ import java.util.List;
 public class InvoiceController {
     private final InvoiceService invoiceService;
 
+    @GetMapping
+    public ResponseEntity<List<InvoiceResponse>> getAllInvoices() {
+        return ResponseEntity.ok(invoiceService.getAllInvoices());
+    }
+
     @PostMapping
     public ResponseEntity<InvoiceResponse> createInvoice(@RequestBody InvoiceCreateRequest request) {
         return ResponseEntity.ok(invoiceService.createInvoice(request));

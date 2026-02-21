@@ -37,3 +37,4 @@ public class PurchaseOrderCreatedEvent extends DomainEvent {
         this.totalAmount = totalAmount;
     }
 }
+

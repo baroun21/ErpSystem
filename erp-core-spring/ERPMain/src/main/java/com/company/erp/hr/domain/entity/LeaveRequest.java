@@ -62,3 +62,4 @@ public class LeaveRequest extends BaseEntity {
         return isPending();
     }
 }
+

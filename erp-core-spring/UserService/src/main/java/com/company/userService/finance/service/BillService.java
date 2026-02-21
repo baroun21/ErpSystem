@@ -22,6 +22,12 @@ public class BillService {
     private final CompanyRepository companyRepository;
     private final SupplierRepository supplierRepository;
 
+    public List<BillResponse> getAllBills() {
+        return billRepository.findAll().stream()
+            .map(BillMapper.INSTANCE::toResponse)
+            .collect(Collectors.toList());
+    }
+
     public BillResponse createBill(BillCreateRequest request) {
         Company company = companyRepository.findById(request.getCompanyId())
             .orElseThrow(() -> new RuntimeException("Company not found"));

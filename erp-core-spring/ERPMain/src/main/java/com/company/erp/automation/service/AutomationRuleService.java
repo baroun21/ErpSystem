@@ -134,3 +134,4 @@ public class AutomationRuleService {
         rule.getConditions().addAll(conditions);
     }
 }
+

@@ -1,7 +1,7 @@
 package com.company.erp.finance.application.service;
 
-import com.company.erp.finance.domain.repository.InvoiceRepository;
-import com.company.erp.finance.domain.repository.PaymentRepository;
+import com.company.userService.finance.repository.InvoiceRepository;
+import com.company.userService.finance.repository.CustomerPaymentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ import java.time.LocalDate;
 public class ARService {
 
     private final InvoiceRepository invoiceRepository;
-    private final PaymentRepository paymentRepository;
+    private final CustomerPaymentRepository paymentRepository;
 
     /**
      * Get total outstanding invoices for a customer
@@ -50,3 +50,4 @@ public class ARService {
         // Update invoice status, create payment application record
     }
 }
+

@@ -33,3 +33,4 @@ public class RfqCreatedEvent extends DomainEvent {
         this.requestedDate = requestedDate;
     }
 }
+

@@ -18,3 +18,4 @@ public interface RfqRepository extends JpaRepository<Rfq, Long> {
     @Query("SELECT r FROM Rfq r WHERE r.companyId = :companyId ORDER BY r.requestedDate DESC")
     List<Rfq> findAllInCompany(@Param("companyId") Long companyId);
 }
+

@@ -50,3 +50,4 @@ public class DomainEventPersistenceListener {
         repository.save(record);
     }
 }
+

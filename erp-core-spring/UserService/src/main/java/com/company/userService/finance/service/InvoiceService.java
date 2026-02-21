@@ -23,6 +23,12 @@ public class InvoiceService {
     private final CompanyRepository companyRepository;
     private final CustomerRepository customerRepository;
 
+    public List<InvoiceResponse> getAllInvoices() {
+        return invoiceRepository.findAll().stream()
+            .map(InvoiceMapper.INSTANCE::toResponse)
+            .collect(Collectors.toList());
+    }
+
     public InvoiceResponse createInvoice(InvoiceCreateRequest request) {
         Company company = companyRepository.findById(request.getCompanyId())
             .orElseThrow(() -> new RuntimeException("Company not found"));

@@ -48,3 +48,4 @@ public class Rfq extends BaseEntity {
     @Column(name = "notes", columnDefinition = "text")
     private String notes;
 }
+

@@ -18,3 +18,4 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Lo
     @Query("SELECT p FROM PurchaseOrder p WHERE p.companyId = :companyId ORDER BY p.orderDate DESC")
     List<PurchaseOrder> findAllInCompany(@Param("companyId") Long companyId);
 }
+

@@ -76,3 +76,4 @@ public class AutomationController {
             .orElse(ResponseEntity.notFound().build());
     }
 }
+

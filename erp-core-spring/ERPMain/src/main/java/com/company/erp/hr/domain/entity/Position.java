@@ -45,3 +45,4 @@ public class Position extends BaseEntity {
     @OneToMany(mappedBy = "position", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Employee> employees;
 }
+

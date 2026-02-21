@@ -23,7 +23,7 @@ public class Supplier {
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
 
-    @Column(name = "code", nullable = false, unique = true)
+    @Column(name = "code")
     private String code;
 
     @Column(name = "name", nullable = false)

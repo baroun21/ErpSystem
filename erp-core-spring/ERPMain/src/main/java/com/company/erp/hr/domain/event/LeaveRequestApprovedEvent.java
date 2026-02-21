@@ -40,3 +40,4 @@ public class LeaveRequestApprovedEvent extends DomainEvent {
         this.approverName = approverName;
     }
 }
+

@@ -20,3 +20,4 @@ public class AutomationTriggerListener {
         executionService.handleDomainEvent(event);
     }
 }
+

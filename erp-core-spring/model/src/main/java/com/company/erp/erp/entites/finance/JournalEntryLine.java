@@ -63,4 +63,47 @@ public class JournalEntryLine {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
+
+    /**
+     * Alias for debitAmount (convenience getter)
+     */
+    public BigDecimal getDebit() {
+        return debitAmount != null ? debitAmount : BigDecimal.ZERO;
+    }
+
+    /**
+     * Alias for debitAmount (convenience setter)
+     */
+    public void setDebit(BigDecimal amount) {
+        this.debitAmount = amount;
+    }
+
+    /**
+     * Alias for creditAmount (convenience getter)
+     */
+    public BigDecimal getCredit() {
+        return creditAmount != null ? creditAmount : BigDecimal.ZERO;
+    }
+
+    /**
+     * Alias for creditAmount (convenience setter)
+     */
+    public void setCredit(BigDecimal amount) {
+        this.creditAmount = amount;
+    }
+
+    /**
+     * Check if line is valid (has either debit or credit, but not both)
+     */
+    public boolean isValid() {
+        BigDecimal debit = getDebit();
+        BigDecimal credit = getCredit();
+        BigDecimal zero = BigDecimal.ZERO;
+        
+        // Must have either debit or credit, not both, not neither
+        boolean hasDebit = debit.compareTo(zero) > 0;
+        boolean hasCredit = credit.compareTo(zero) > 0;
+        
+        return (hasDebit && !hasCredit) || (!hasDebit && hasCredit);
+    }
 }

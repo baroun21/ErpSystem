@@ -15,6 +15,11 @@ import java.util.List;
 public class CustomerController {
     private final CustomerService customerService;
 
+    @GetMapping
+    public ResponseEntity<List<CustomerResponse>> getAllCustomers() {
+        return ResponseEntity.ok(customerService.getAllCustomers());
+    }
+
     @PostMapping
     public ResponseEntity<CustomerResponse> createCustomer(@RequestBody CustomerCreateRequest request) {
         return ResponseEntity.ok(customerService.createCustomer(request));

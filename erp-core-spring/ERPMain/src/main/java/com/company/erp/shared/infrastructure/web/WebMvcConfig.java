@@ -22,3 +22,4 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/actuator/**", "/health");  // Exclude health checks
     }
 }
+

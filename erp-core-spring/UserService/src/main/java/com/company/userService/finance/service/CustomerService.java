@@ -19,6 +19,12 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     private final CompanyRepository companyRepository;
 
+    public List<CustomerResponse> getAllCustomers() {
+        return customerRepository.findAll().stream()
+            .map(CustomerMapper.INSTANCE::toResponse)
+            .collect(Collectors.toList());
+    }
+
     public CustomerResponse createCustomer(CustomerCreateRequest request) {
         Company company = companyRepository.findById(request.getCompanyId())
             .orElseThrow(() -> new RuntimeException("Company not found"));

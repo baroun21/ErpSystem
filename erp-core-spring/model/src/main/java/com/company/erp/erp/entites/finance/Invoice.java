@@ -38,8 +38,8 @@ public class Invoice {
     @Column(name = "due_date", nullable = false)
     private LocalDate dueDate;
 
-    @Column(name = "description")
-    private String description;
+    @Column(name = "amount", precision = 15, scale = 2)
+    private BigDecimal amount = BigDecimal.ZERO;
 
     @Column(name = "subtotal", precision = 15, scale = 2)
     private BigDecimal subtotal = BigDecimal.ZERO;
@@ -54,7 +54,10 @@ public class Invoice {
     private BigDecimal paidAmount = BigDecimal.ZERO;
 
     @Column(name = "status")
-    private String status = "DRAFT"; // DRAFT, POSTED, PAID, PARTIAL, OVERDUE
+    private String status = "DRAFT"; // DRAFT, SENT, PAID, OVERDUE
+
+    @Column(name = "description")
+    private String description;
 
     @Column(name = "notes")
     private String notes;

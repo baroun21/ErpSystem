@@ -10,3 +10,4 @@ import java.util.List;
 public interface AutomationExecutionLogRepository extends JpaRepository<AutomationExecutionLog, Long> {
     List<AutomationExecutionLog> findByRule_RuleIdOrderByStartedAtDesc(Long ruleId);
 }
+

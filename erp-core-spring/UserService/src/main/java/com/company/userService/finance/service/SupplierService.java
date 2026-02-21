@@ -19,6 +19,12 @@ public class SupplierService {
     private final SupplierRepository supplierRepository;
     private final CompanyRepository companyRepository;
 
+    public List<SupplierResponse> getAllSuppliers() {
+        return supplierRepository.findAll().stream()
+            .map(SupplierMapper.INSTANCE::toResponse)
+            .collect(Collectors.toList());
+    }
+
     public SupplierResponse createSupplier(SupplierCreateRequest request) {
         Company company = companyRepository.findById(request.getCompanyId())
             .orElseThrow(() -> new RuntimeException("Company not found"));

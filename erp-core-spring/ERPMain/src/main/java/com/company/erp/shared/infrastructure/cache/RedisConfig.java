@@ -51,3 +51,4 @@ public class RedisConfig {
      * when spring.redis.* properties are set in application.yml
      */
 }
+

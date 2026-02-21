@@ -10,3 +10,4 @@ package com.company.erp.shared.domain;
 public interface ValueObject {
 
 }
+

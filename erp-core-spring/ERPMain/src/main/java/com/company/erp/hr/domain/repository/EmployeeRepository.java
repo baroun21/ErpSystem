@@ -46,3 +46,4 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Query("SELECT COUNT(e) FROM HrEmployee e WHERE e.companyId = :companyId")
     long countInCompany(@Param("companyId") Long companyId);
 }
+

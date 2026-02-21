@@ -50,3 +50,4 @@ public class EmployeeCreatedEvent extends DomainEvent {
         return firstName + " " + lastName;
     }
 }
+

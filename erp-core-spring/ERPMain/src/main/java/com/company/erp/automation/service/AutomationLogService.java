@@ -36,3 +36,4 @@ public class AutomationLogService {
         return logRepository.findById(logId).map(logMapper::toDTO);
     }
 }
+

@@ -13,3 +13,4 @@ public interface AutomationRuleRepository extends JpaRepository<AutomationRule, 
 
     List<AutomationRule> findByEnabledTrueAndTriggerType(TriggerType triggerType);
 }
+

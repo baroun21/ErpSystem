@@ -41,3 +41,4 @@ public class AttendanceRecordedEvent extends DomainEvent {
         this.checkOutTime = checkOutTime;
     }
 }
+

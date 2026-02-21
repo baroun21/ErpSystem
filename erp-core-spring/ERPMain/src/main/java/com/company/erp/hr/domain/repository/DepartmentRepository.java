@@ -40,3 +40,4 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     @Query("SELECT COUNT(d) FROM HrDepartment d WHERE d.companyId = :companyId")
     long countInCompany(@Param("companyId") Long companyId);
 }
+

@@ -44,3 +44,4 @@ public class Department extends BaseEntity {
     @OneToMany(mappedBy = "department", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Position> positions;
 }
+

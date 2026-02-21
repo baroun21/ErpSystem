@@ -18,3 +18,4 @@ public interface VendorRepository extends JpaRepository<Vendor, Long> {
     @Query("SELECT v FROM Vendor v WHERE v.companyId = :companyId ORDER BY v.name")
     List<Vendor> findAllInCompany(@Param("companyId") Long companyId);
 }
+

@@ -40,3 +40,4 @@ public class StockAdjustedEvent extends DomainEvent {
         this.adjustedAt = adjustedAt;
     }
 }
+

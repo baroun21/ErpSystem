@@ -39,3 +39,4 @@ public class DomainEventPublisher {
         events.forEach(this::publish);
     }
 }
+

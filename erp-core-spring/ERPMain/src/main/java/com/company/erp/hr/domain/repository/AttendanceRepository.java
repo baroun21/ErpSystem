@@ -62,3 +62,4 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
         @Param("endDate") LocalDate endDate
     );
 }
+

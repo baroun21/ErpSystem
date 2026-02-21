@@ -16,6 +16,11 @@ import java.util.List;
 public class BillController {
     private final BillService billService;
 
+    @GetMapping
+    public ResponseEntity<List<BillResponse>> getAllBills() {
+        return ResponseEntity.ok(billService.getAllBills());
+    }
+
     @PostMapping
     public ResponseEntity<BillResponse> createBill(@RequestBody BillCreateRequest request) {
         return ResponseEntity.ok(billService.createBill(request));
